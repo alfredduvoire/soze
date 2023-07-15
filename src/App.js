@@ -1,24 +1,30 @@
-import logo from './logo.svg';
 import './App.css';
+import styled from 'styled-components';
+// import Background from './components/background.js';
+// import DetailList from './components/detail_list.js';
+import Story from './components/story.js'
+
+const StyledAppDiv = styled.div`
+  display: flex;
+  height: 600px;
+
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid red;
+`;
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <StyledAppDiv>
+      <Story
+        detailList = {[{
+          type: 'who',
+          connectors: [1, 1],
+        }]}
+      />
+    </StyledAppDiv>
   );
 }
 
