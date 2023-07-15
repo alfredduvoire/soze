@@ -13,7 +13,7 @@ const StyledStoryDiv = styled.div`
 
 const Story = (props) => {
     // create the list of details from the props
-    let detailList = props.detailList.map( (x, i) => {
+    let detailList = props.storyDetails.map( (x, i) => {
         return (
             <Detail
                 type={x.type}

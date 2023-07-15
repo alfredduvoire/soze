@@ -33,7 +33,7 @@ function App() {
 
 
   const generateDetailList = (num = NUMDETAILS) => {
-    return Array(num).map((x, i) => {
+    return new Array(num).fill(undefined).map((x, i) => {
       return {
         type: possibleTypes[ getRandomInt(possibleTypes.length - 1) ],
         connectors: possibleConnectors[ getRandomInt(possibleConnectors.length - 1) ],
@@ -47,7 +47,7 @@ function App() {
         detailList = {generateDetailList(NUMDETAILS)}
       />
       <Story 
-        storyDetails = {[]}
+        storyDetails = {generateDetailList(3)}
       />
     </StyledAppDiv>
   );
