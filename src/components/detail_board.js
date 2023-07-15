@@ -2,13 +2,15 @@ import Detail from "./detail.js"
 import styled from 'styled-components'
 
 const StyledBoardDiv = styled.div`
-    background: #EEEEEE;
+    background: #FAFAFA;
     width: 90%;
-    height: 9em;
+    height: 18em;
 
     display: flex;
-    justify-content: space-between;
+    flex-direction: row;
+    justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 `;
 
 const DetailBoard = (props) => {

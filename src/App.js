@@ -9,6 +9,7 @@ const StyledAppDiv = styled.div`
   display: flex;
   height: 600px;
 
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
@@ -35,8 +36,8 @@ function App() {
   const generateDetailList = (num = NUMDETAILS) => {
     return new Array(num).fill(undefined).map((x, i) => {
       return {
-        type: possibleTypes[ getRandomInt(possibleTypes.length - 1) ],
-        connectors: possibleConnectors[ getRandomInt(possibleConnectors.length - 1) ],
+        type: possibleTypes[ getRandomInt(possibleTypes.length) ],
+        connectors: possibleConnectors[ getRandomInt(possibleConnectors.length) ],
       };
     });
   };

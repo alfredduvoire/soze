@@ -3,14 +3,14 @@
 import styled from 'styled-components'
 
 const StyledDetailImg = styled.img`
-    background: papayawhip;
+    // background: papayawhip;
     margin: 0.5em;
-    height: 3em;
+    height: 7em;
     width: auto;
     object-fit: contain;
 
-    border: 1px solid black;
-    border-radius: 3px;
+    // border: 1px solid black;
+    // border-radius: 3px;
 `;
 
 
@@ -23,7 +23,7 @@ const Detail = (props) => {
     // I don't think we need a status or anything, but... who knows
     return (
             <StyledDetailImg 
-                src={"https://raw.githubusercontent.com/dcstrandberg/soze/e49110aca181cf3d4bb213400e94d43d0439d97a/public/" + props.type + "-" + props.connectors[0] + "-" + props.connectors[1] + ".png"}  
+                src={"https://raw.githubusercontent.com/dcstrandberg/soze/main/public/" + props.type + "-" + props.connectors[0] + "-" + props.connectors[1] + ".png"}  
                 alt=""
             />
     );
