@@ -25,6 +25,7 @@ const Story = (props) => {
                 idx={i}
                 boardIdx={x.boardIdx}
                 handleClick={props.handleStoryClick}
+                parent={"story"}
             />
         );
     });

@@ -25,6 +25,7 @@ const DetailBoard = (props) => {
                 selected={x.selected}
                 idx={i}
                 handleClick={props.handleBoardClick}
+                parent={"board"}
             />
         );
     });

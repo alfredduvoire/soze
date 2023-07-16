@@ -4,7 +4,8 @@ import styled from 'styled-components'
 
 const StyledDetailImg = styled.img`
     // background: papayawhip;
-    margin: 0.5em;
+
+    margin: ${props => (props.parent === "story") ? "0.5em 0em" : "0.5em"};
     height: 7em;
     width: auto;
     object-fit: contain;
@@ -28,6 +29,7 @@ const Detail = (props) => {
                 src={"https://raw.githubusercontent.com/dcstrandberg/soze/main/public/" + props.type + "-" + props.connectors[0] + "-" + props.connectors[1] + ".png"}  
                 alt=""
                 selected={props.selected}
+                parent={props.parent}
                 onClick={() => props.handleClick(props.idx)}
             />
     );
