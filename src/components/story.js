@@ -1,4 +1,5 @@
 import Detail from "./detail.js"
+import IO from "./io_block.js"
 import styled from 'styled-components'
 
 const StyledStoryDiv = styled.div`
@@ -30,11 +31,15 @@ const Story = (props) => {
         );
     });
 
+    // Append to the beginning and end
+
     return (
         <StyledStoryDiv>
+            <IO num={props.IO[0]} />
             {detailList}
+            <IO num={props.IO[1]} />
         </StyledStoryDiv>
-    )
+    );
 }
 
 

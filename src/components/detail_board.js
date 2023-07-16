@@ -9,7 +9,7 @@ const StyledBoardDiv = styled.div`
 
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
 `;
@@ -34,7 +34,7 @@ const DetailBoard = (props) => {
         <StyledBoardDiv>
             {detailList}
         </StyledBoardDiv>
-    )
+    );
 }
 
 
