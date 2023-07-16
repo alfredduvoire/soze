@@ -8,6 +8,8 @@ const StyledDetailImg = styled.img`
     height: 7em;
     width: auto;
     object-fit: contain;
+    filter: contrast( ${props => props.selected ? 0.1 : 1} );
+
 
     // border: 1px solid black;
     // border-radius: 3px;
@@ -25,6 +27,8 @@ const Detail = (props) => {
             <StyledDetailImg 
                 src={"https://raw.githubusercontent.com/dcstrandberg/soze/main/public/" + props.type + "-" + props.connectors[0] + "-" + props.connectors[1] + ".png"}  
                 alt=""
+                selected={props.selected}
+                onClick={() => props.handleClick(props.idx)}
             />
     );
 }

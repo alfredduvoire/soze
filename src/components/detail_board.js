@@ -4,7 +4,8 @@ import styled from 'styled-components'
 const StyledBoardDiv = styled.div`
     background: #FAFAFA;
     width: 90%;
-    height: 18em;
+    height: auto;
+    padding: 1em;
 
     display: flex;
     flex-direction: row;
@@ -18,9 +19,12 @@ const DetailBoard = (props) => {
     let detailList = props.detailList.map( (x, i) => {
         return (
             <Detail
+                key={i}
                 type={x.type}
                 connectors={x.connectors}
+                selected={x.selected}
                 idx={i}
+                handleClick={props.handleBoardClick}
             />
         );
     });

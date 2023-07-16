@@ -4,7 +4,7 @@ import styled from 'styled-components'
 const StyledStoryDiv = styled.div`
     background: #FFFFDD;
     width: 90%;
-    height: auto;
+    height: 9em;
 
     display: flex;
     justify-content: center;
@@ -19,9 +19,12 @@ const Story = (props) => {
     let detailList = props.storyDetails.map( (x, i) => {
         return (
             <Detail
+                key={i}
                 type={x.type}
                 connectors={x.connectors}
                 idx={i}
+                boardIdx={x.boardIdx}
+                handleClick={props.handleStoryClick}
             />
         );
     });
