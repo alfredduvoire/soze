@@ -1,13 +1,15 @@
 import styled from 'styled-components'
 
 const StyledIOBlock = styled.div`
-color: red
+color: red;
 margin: 0.5em;
 height: 7em;
-width: 4em;
+width: 7em;
+
+text-align: center;
 
 border: 3px solid gold;
-border-radius: 3px;
+border-radius: 6px;
 
 `;
 
@@ -15,7 +17,7 @@ const IO = (props) => {
 
     return (
         <StyledIOBlock>
-            {props.num}
+            <h3>{props.num}</h3>
         </StyledIOBlock>
     );
 }

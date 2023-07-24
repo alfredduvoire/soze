@@ -1,5 +1,7 @@
 import Detail from "./detail.js"
-import IO from "./io_block.js"
+import DetailGap from "./detail_gap.js";
+import IO from "./io_block.js";
+
 import styled from 'styled-components'
 
 const StyledStoryDiv = styled.div`
@@ -26,7 +28,7 @@ const Story = (props) => {
                 idx={i}
                 boardIdx={x.boardIdx}
                 handleClick={props.handleStoryClick}
-                parent={"story"}
+                parent="story"
             />
         );
     });
@@ -37,6 +39,7 @@ const Story = (props) => {
         <StyledStoryDiv>
             <IO num={props.IO[0]} />
             {detailList}
+            <DetailGap />
             <IO num={props.IO[1]} />
         </StyledStoryDiv>
     );

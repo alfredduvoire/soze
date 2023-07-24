@@ -17,6 +17,32 @@ const StyledAppDiv = styled.div`
   border: 1px solid red;
 `;
 
+const StoryCompleteModal = styled.div`
+  height: 100px;
+  width: 400px;
+  display: flex;
+  text-wrap: wrap;
+  flex-direction: column;
+
+  padding: 10px;
+
+  background: #333333;
+  color: #FFFFFF;
+
+  opacity: ${props => props.storyComplete ? 1 : 0};
+  z-index: ${props => props.storyComplete ? 100 : -1};
+
+  // opacity: .7;
+  transition: opacity 1s;
+
+  text-align: center;
+
+  position: absolute; 
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+`;
+
 
 function App() {
 
@@ -92,7 +118,13 @@ function App() {
       
     // Call next function
     if (tempState['isValid'] && tempState['isComplete']) {
-        tempState = handleCompletedStory(tempState);
+
+        // We need to set state so that the animation fires? 
+        let diffState = JSON.parse(JSON.stringify(tempState));
+
+        setGameState(diffState);
+        
+        // tempState = handleCompletedStory(tempState);
     }
 
     setGameState(tempState);
@@ -213,7 +245,9 @@ function App() {
 
   return (
     <StyledAppDiv>
-
+      <StoryCompleteModal 
+        storyComplete={(gameState['isValid'] && gameState['isComplete'])} 
+      />
       <DetailBoard
         detailList = {gameState['detailList']}
         handleBoardClick = {handleBoardClick}

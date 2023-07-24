@@ -1,5 +1,5 @@
-import Detail from "./detail.js"
-import styled from 'styled-components'
+import Detail from "./detail.js";
+import styled from 'styled-components';
 
 const StyledBoardDiv = styled.div`
     background: #FAFAFA;
