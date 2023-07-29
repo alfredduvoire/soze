@@ -8,12 +8,11 @@ import styled, { keyframes } from 'styled-components';
 const select = keyframes`
     0% {
         transform: scale( 1 ) translate(0, 0);
-    }
-    90% {
-        transform: scale( .01 ) translate(0, 500% );
+        opacity: 1;
     }
     100% {
-        transform: scale( 1 ) translate(0, 0);
+        transform: scale( .01 ) translate(0, 500% );
+        opacity: 0;
     }
 `;
 
@@ -23,11 +22,13 @@ const StyledDetailImg = styled.img`
     width: 7em;
     object-fit: contain;
 
-    filter: contrast( ${props => props.selected ? 0.1 : 1} );
-    transition: filter 401ms;
+    // filter: contrast( ${props => props.selected ? 0.1 : 1} );
+    // transition: filter 401ms;
+
 
     animation-name:  ${props => props.selected ? select : null};
     animation-duration: 200ms;
+    animation-fill-mode: forwards;
 
     // border: 1px solid black;
     // border-radius: 3px;

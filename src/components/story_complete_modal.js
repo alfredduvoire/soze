@@ -32,11 +32,14 @@ const StyledStoryCompleteModal = styled.div`
 
   padding: 10px;
 
-  background: #FF3333;
+  background: #333333;
   color: #FFFFFF;
 
-  animation-name: ${props => (props.storyComplete) ? inOut : null};
-  animation-duration: 300ms;
+  opacity: 0;
+  z-index: -1;
+
+  animation-name: ${inOut};
+  animation-duration: ${props => "" + props.duration + "ms"};
 
   text-align: center;
 
@@ -49,7 +52,7 @@ const StyledStoryCompleteModal = styled.div`
 const StoryCompleteModal = (props) => {
     
     return (
-        <StyledStoryCompleteModal storyComplete={props.storyComplete}>
+        <StyledStoryCompleteModal duration={props.duration}>
         STORY CHECKS OUT... 
         <br />
         BUT I'VE GOT ANOTHER QUESTION

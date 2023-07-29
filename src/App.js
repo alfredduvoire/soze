@@ -2,6 +2,7 @@ import './App.css';
 import styled from 'styled-components';
 // import Background from './components/background.js';
 // import DetailList from './components/detail_list.js';
+import StoryCompleteModal from './components/story_complete_modal';
 import Story from './components/story.js'
 import DetailBoard from './components/detail_board.js';
 import { useState } from 'react';
@@ -17,33 +18,6 @@ const StyledAppDiv = styled.div`
   border: 1px solid red;
 `;
 
-const StoryCompleteModal = styled.div`
-  height: 100px;
-  width: 400px;
-  display: flex;
-  text-wrap: wrap;
-  flex-direction: column;
-
-  padding: 10px;
-
-  background: #333333;
-  color: #FFFFFF;
-
-  opacity: ${props => props.storyComplete ? 1 : 0};
-  z-index: ${props => props.storyComplete ? 100 : -1};
-
-  // opacity: .7;
-  transition: opacity 1s;
-
-  text-align: center;
-
-  position: absolute; 
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-`;
-
-
 function App() {
 
   const NUMDETAILS = 16;
@@ -53,6 +27,10 @@ function App() {
     [3, 1], [3, 2], [3, 3],
   ];
   const possibleTypes = ['who', 'where', 'when'];
+
+  /////////////////////// Animation Timing Constants
+  // For now I've only got one...
+  const completeModalTime = 1500;
 
   // Helper function to generate random integers
   const getRandomInt = (max) => {
@@ -120,11 +98,14 @@ function App() {
     if (tempState['isValid'] && tempState['isComplete']) {
 
         // We need to set state so that the animation fires? 
-        let diffState = JSON.parse(JSON.stringify(tempState));
+        // let diffState = JSON.parse(JSON.stringify(tempState));
 
-        setGameState(diffState);
+        setGameState(tempState);
         
-        // tempState = handleCompletedStory(tempState);
+        setTimeout(() => {
+          tempState = handleCompletedStory(tempState);
+          setGameState(tempState);
+        }, completeModalTime + 200);
     }
 
     setGameState(tempState);
@@ -245,9 +226,9 @@ function App() {
 
   return (
     <StyledAppDiv>
-      <StoryCompleteModal 
-        storyComplete={(gameState['isValid'] && gameState['isComplete'])} 
-      />
+      {(gameState['isValid'] && gameState['isComplete']) && 
+        <StoryCompleteModal duration={completeModalTime}/>
+      }
       <DetailBoard
         detailList = {gameState['detailList']}
         handleBoardClick = {handleBoardClick}
