@@ -4,7 +4,6 @@ import styled from 'styled-components';
 const StyledBoardDiv = styled.div`
     background: #FAFAFA;
     width: 90%;
-    height: auto;
     padding: 1em;
 
     display: flex;

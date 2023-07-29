@@ -9,6 +9,8 @@ const StyledStoryDiv = styled.div`
     width: 90%;
     height: 9em;
 
+    padding: 0em 1em;
+
     display: flex;
     justify-content: center;
     align-items: center;

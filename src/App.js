@@ -1,21 +1,21 @@
 import './App.css';
 import styled from 'styled-components';
-// import Background from './components/background.js';
-// import DetailList from './components/detail_list.js';
-import StoryCompleteModal from './components/story_complete_modal';
-import Story from './components/story.js'
-import DetailBoard from './components/detail_board.js';
 import { useState } from 'react';
+
+import Sidebar from './components/sidebar.js';
+import PlayArea from './components/play_area.js';
 
 const StyledAppDiv = styled.div`
   display: flex;
-  height: 600px;
 
-  flex-direction: column;
+  margin: 5px;
+  padding: 5px;
+  height: 95%;
+  width: 95%;
+
+  flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-
-  border: 1px solid red;
 `;
 
 function App() {
@@ -30,7 +30,7 @@ function App() {
 
   /////////////////////// Animation Timing Constants
   // For now I've only got one...
-  const completeModalTime = 1500;
+  const completeModalTime = 2000;
 
   // Helper function to generate random integers
   const getRandomInt = (max) => {
@@ -226,29 +226,23 @@ function App() {
 
   return (
     <StyledAppDiv>
-      {(gameState['isValid'] && gameState['isComplete']) && 
-        <StoryCompleteModal duration={completeModalTime}/>
-      }
-      <DetailBoard
+
+      <Sidebar 
+
+      />
+      
+      <PlayArea 
+        isValid = {gameState['isValid']}
+        isComplete = {gameState['isComplete']}
+        completeModalTime = {completeModalTime}
         detailList = {gameState['detailList']}
         handleBoardClick = {handleBoardClick}
-      />
-
-      <Story 
         storyDetails = {gameState['storyDetails']}
         handleStoryClick = {handleStoryClick}
         IO = {gameState['IO']}
+        isConnecting = {gameState['isConnecting']}
+        detailTypeCount = {gameState['detailTypeCount']}
       />
-
-      { 
-        (( !(gameState['isConnecting']) && gameState['storyDetails'].length > 0 ) || 
-          (!(gameState['isValid']) && gameState['detailTypeCount']['who'] > 0 
-            && gameState['detailTypeCount']['where'] > 0 
-            && gameState['detailTypeCount']['when'] > 0)) && 
-            <font color="red">
-              <p />This story doesn't add up!
-            </font>
-      }
 
     </StyledAppDiv>
   );
