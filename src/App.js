@@ -1,6 +1,6 @@
 import './App.css';
 import styled from 'styled-components';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import Sidebar from './components/sidebar.js';
 import PlayArea from './components/play_area.js';
@@ -34,6 +34,8 @@ function App() {
   /////////////////////// Animation Timing Constants
   const completeModalTime = 2000;
   const refreshEarnedTime = 2000;
+  const newPointTime = 1000;
+  const blankPointTime = 500;
    
   /////////////////////////////// HELPER FUNCTIONS ////////////////////////////
 
@@ -258,6 +260,9 @@ function App() {
         // Currently nothing happens though in theory it should end the game
         return;
       } else {
+
+        setPointLossIdx(gameState['score']); 
+        
         tempState['score'] = tempState['score'] - 1;
       }
     } else {
@@ -323,6 +328,7 @@ function App() {
 
   const [showRefreshEarned, setShowRefreshEarned] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
+  const [pointLossIdx, setPointLossIdx] = useState(0);
 
   return (
     <StyledAppDiv>
@@ -334,6 +340,9 @@ function App() {
         refreshEarnedTime={refreshEarnedTime}
         score={gameState['score']}
         scoreNeeded={gameState['scoreNeeded']}
+        newPointTime={newPointTime}
+        blankPointTime={blankPointTime}
+        pointLossIdx = {pointLossIdx}
       />
       
       <PlayArea 

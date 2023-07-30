@@ -3,6 +3,7 @@ import ScoreTracker from './score_tracker';
 
 const StyledScoreContainer = styled.div`
     height: 50%;
+    width: 40%;
 
     display: flex;
     flex-direction: column;
@@ -19,6 +20,9 @@ const ScoreContainer = (props) => {
             <ScoreTracker 
                 score={props.score}
                 scoreNeeded={props.scoreNeeded}
+                newPointTime={props.newPointTime}
+                blankPointTime={props.blankPointTime}
+                pointLossIdx = {props.pointLossIdx}
             />
         </StyledScoreContainer>
 

@@ -4,7 +4,7 @@ import ScoreContainer from './score_container';
 
 const StyledSidebar = styled.div`
     height: 100%;
-    width: 20%;
+    width: 15%;
 
     display: flex;
     flex-direction: column;
@@ -12,7 +12,7 @@ const StyledSidebar = styled.div`
     padding: 1em;
     margin: 0px;
 
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 
     border: 1px solid green;
@@ -32,6 +32,9 @@ const Sidebar = (props) => {
             <ScoreContainer 
                 score={props.score}
                 scoreNeeded={props.scoreNeeded}
+                newPointTime={props.newPointTime}
+                blankPointTime={props.blankPointTime}
+                pointLossIdx = {props.pointLossIdx}
             />
         </StyledSidebar>
     );

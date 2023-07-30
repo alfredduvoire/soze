@@ -6,7 +6,7 @@ import DetailBoard from './detail_board.js';
 
 const StyledPlayArea = styled.div`
     height: 100%;
-    width: 80%;
+    width: 85%;
 
     display: flex;
     flex-direction: column;
