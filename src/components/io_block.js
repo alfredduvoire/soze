@@ -4,7 +4,7 @@ const StyledIOBlock = styled.div`
 color: red;
 margin: 0.5em;
 height: 7em;
-width: 7em;
+Width: 5%;
 
 text-align: center;
 

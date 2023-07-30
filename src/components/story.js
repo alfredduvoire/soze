@@ -1,19 +1,23 @@
 import Detail from "./detail.js"
 import DetailGap from "./detail_gap.js";
-import IO from "./io_block.js";
 
 import styled from 'styled-components'
 
 const StyledStoryDiv = styled.div`
     background: #FFFFDD;
 
+    width: 100%;
+
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     flex-wrap: nowrap;
-    overflow: auto;
+    overflow: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    ::-webkit-scrollbar { display: none; }
 
-`;
+    `;
 
 const Story = (props) => {
     // create the list of details from the props
@@ -35,10 +39,8 @@ const Story = (props) => {
 
     return (
         <StyledStoryDiv>
-            <IO num={props.IO[0]} />
             {detailList}
             <DetailGap />
-            <IO num={props.IO[1]} />
         </StyledStoryDiv>
     );
 }

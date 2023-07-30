@@ -3,8 +3,9 @@ import styled from 'styled-components';
 
 const StyledBoardDiv = styled.div`
     background: #FAFAFA;
-    width: 90%;
+    width: 100%;
     padding: 1em;
+    box-sizing: border-box;
 
     display: flex;
     flex-direction: row;

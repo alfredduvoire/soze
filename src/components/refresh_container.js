@@ -18,12 +18,10 @@ const RefreshContainer = (props) => {
                 numRefreshes={props.numRefreshes}
                 handleRefreshClick={props.handleRefreshClick}        
             />
-            {(props.refreshEarned) && 
                 <RefreshEarned 
                     refreshEarned={props.refreshEarned}
                     refreshEarnedTime={props.refreshEarnedTime}
                 />
-            }
             {(props.numRefreshes === 0) &&
                 <div>- Costs 1 Star -</div>
             }

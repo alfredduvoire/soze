@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import ScoreTracker from './score_tracker';
 
 const StyledScoreContainer = styled.div`
-    height: 50%;
+    height: 60%;
     width: 40%;
 
     display: flex;
@@ -10,6 +10,8 @@ const StyledScoreContainer = styled.div`
     
     justify-content: space-between;
     align-items: center;
+
+    font-size: 1.5em;
 `;
 
 const ScoreContainer = (props) => {

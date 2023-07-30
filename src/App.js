@@ -1,6 +1,6 @@
 import './App.css';
 import styled from 'styled-components';
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 
 import Sidebar from './components/sidebar.js';
 import PlayArea from './components/play_area.js';

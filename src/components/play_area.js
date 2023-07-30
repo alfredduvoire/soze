@@ -12,6 +12,7 @@ const StyledPlayArea = styled.div`
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    overflow: hidden;
 
     padding: 1em;
     margin: 0;
