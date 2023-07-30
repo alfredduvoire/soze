@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-const StyledPoint = styled.div`
+const StyledPoint = styled.img`
     margin: 3px;
     width: 100%;
 
@@ -10,10 +10,10 @@ const StyledPoint = styled.div`
 
 const Point = (props) => {
     return (
-        <StyledPoint>
-            +1
-        </StyledPoint>
-
+        <StyledPoint
+            src = "/workspaces/soze/public/point.png"
+        />
+        
     );
 }
 
