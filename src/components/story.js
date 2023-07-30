@@ -6,10 +6,6 @@ import styled from 'styled-components'
 
 const StyledStoryDiv = styled.div`
     background: #FFFFDD;
-    width: 90%;
-    height: 9em;
-
-    padding: 0em 1em;
 
     display: flex;
     justify-content: center;

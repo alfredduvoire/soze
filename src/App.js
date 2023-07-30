@@ -21,6 +21,9 @@ const StyledAppDiv = styled.div`
 function App() {
 
   const NUMDETAILS = 16;
+  const NUMFORSTORY = 3;
+  const MAXSCORENEEDED = 8;
+
   const possibleConnectors = [
     [1, 1], [1, 2], [1, 3],
     [2, 1], [2, 2], [2, 3],
@@ -29,15 +32,17 @@ function App() {
   const possibleTypes = ['who', 'where', 'when'];
 
   /////////////////////// Animation Timing Constants
-  // For now I've only got one...
   const completeModalTime = 2000;
+  const refreshEarnedTime = 2000;
+   
+  /////////////////////////////// HELPER FUNCTIONS ////////////////////////////
 
   // Helper function to generate random integers
   const getRandomInt = (max) => {
     return Math.floor(Math.random() * max);
   } ;
 
-
+  // Helper function to  generate the Detail List
   const generateDetailList = (num = NUMDETAILS) => {
     return new Array(num).fill(undefined).map((x, i) => {
       return {
@@ -48,7 +53,110 @@ function App() {
     });
   };
 
-  /////////////////////// Click handler functions
+  // Helper function to generate a new scoreNeeded
+  // Todo: make this semi-random dependent on what level they're on
+  const generateScoreNeeded = () => {
+    return getRandomInt(MAXSCORENEEDED - 2) + 3;
+  }
+
+  // Function to refresh the detail board and story
+  const refreshDetails = (oldState) => {
+    let tempState = {...oldState};
+
+    // Replace all the details in the detailBoard and clear the story
+    // Do we need to clear the story so frequently that it's its own function?
+    // Refreshing the detail board should be...
+
+    // Reset Detail Type Counts
+    tempState['detailTypeCount'] = {
+      who: 0,
+      where: 0,
+      when: 0,
+    };
+    
+    // Reset valid + complete checks
+    tempState['isValid'] = false;
+    tempState['isComplete'] = false;
+    tempState['isConnecting'] = false;
+
+    // Set the Detail List
+    tempState['detailList'] = generateDetailList(NUMDETAILS);
+
+    // Clear the story
+    tempState['storyDetails'] = [];
+
+    return tempState;
+
+  };
+
+
+  // Function to progress game logic after a turn is complete
+  const handleCompletedStory = (oldState) => {
+    let tempState = {...oldState};
+
+    // TODO: Point tracking logic goes here
+    // Check if it's longer than necessary, and give refresh
+    if (tempState['storyDetails'].length > NUMFORSTORY) { 
+      // Animate Refresh Earned
+      setShowRefreshEarned(true);
+      
+      // I think the animation Booleans need to be their own state -- they can't be part of Game State
+      setTimeout(() => {
+        setShowRefreshEarned(false);
+      }, refreshEarnedTime + 200);
+
+      // Now give the refresh
+      tempState['numRefreshes'] = tempState['numRefreshes'] + 1;
+
+    }
+
+    // Add one to the score
+    tempState['score'] = tempState['score'] + 1;
+
+    // Check if we've hit the scoreNeeded
+    if (tempState['score'] === tempState['scoreNeeded']) {
+      // End the level
+      // TODO: encapsulate this into its own function
+      // TODO: Add level logic
+
+      // Set the score back to 0 and generate a new max score
+      tempState['score'] = 0;
+      tempState['scoreNeeded'] = generateScoreNeeded();
+    }
+    
+    // Reset Detail Type Counts
+    tempState['detailTypeCount'] = {
+      who: 0,
+      where: 0,
+      when: 0,
+    };
+    
+    // Reset valid + complete checks
+    tempState['isValid'] = false;
+    tempState['isComplete'] = false;
+    tempState['isConnecting'] = false;
+    
+    // Change IO Connectors
+    tempState['IO'] = possibleConnectors[ getRandomInt(possibleConnectors.length) ];
+    
+    // Refresh missing details in list
+    const refreshIndices = tempState['storyDetails'].map( (x) => {
+      return x['boardIdx'];
+    });
+    
+    for (let i = 0; i < refreshIndices.length; i++) {
+      tempState['detailList'][ refreshIndices[i] ] = generateDetailList(1)[0];
+    }
+
+    // Clear the story
+    tempState['storyDetails'] = [];
+    
+    return tempState;
+  };
+
+
+  /////////////////////////////// CLICK HANDLERS //////////////////////////////
+
   // Handle Click on Details on Board
   const handleBoardClick = (idx) => {
     // Adjust Selected Status of Detail
@@ -98,56 +206,19 @@ function App() {
     if (tempState['isValid'] && tempState['isComplete']) {
 
         // We need to set state so that the animation fires? 
-        // let diffState = JSON.parse(JSON.stringify(tempState));
-
-        setGameState(tempState);
+        setShowCompleteModal(true);
         
         setTimeout(() => {
-          tempState = handleCompletedStory(tempState);
-          setGameState(tempState);
+          // I think it's best practice to do this, so that we dont' have state race conditions
+          setShowCompleteModal(false);
         }, completeModalTime + 200);
+        
+        tempState = handleCompletedStory(tempState);
     }
 
     setGameState(tempState);
 
     return;
-  };
-  
-
-  // Function to progress game logic after a turn is complete
-  const handleCompletedStory = (oldState) => {
-    let tempState = {...oldState};
-
-    // TODO: Point tracking logic goes here
-    
-    // Reset Detail Type Counts
-    tempState['detailTypeCount'] = {
-      who: 0,
-      where: 0,
-      when: 0,
-    };
-    
-    // Reset valid + complete checks
-    tempState['isValid'] = false;
-    tempState['isComplete'] = false;
-    tempState['isConnecting'] = false;
-    
-    // Change IO Connectors
-    tempState['IO'] = possibleConnectors[ getRandomInt(possibleConnectors.length) ];
-    
-    // Refresh missing details in list
-    const refreshIndices = tempState['storyDetails'].map( (x) => {
-      return x['boardIdx'];
-    });
-    
-    for (let i = 0; i < refreshIndices.length; i++) {
-      tempState['detailList'][ refreshIndices[i] ] = generateDetailList(1)[0];
-    }
-
-    // Clear the story
-    tempState['storyDetails'] = [];
-    
-    return tempState;
   };
   
 
@@ -175,6 +246,30 @@ function App() {
     setGameState(tempState);
     return;
   };
+
+  // Handle Click on Refresh Button
+  const handleRefreshClick = () => {
+    let tempState = {...gameState};
+    
+    // Check whether refresh is valid
+    if (gameState['numRefreshes'] < 1) {
+      // If they don't have any refreshes it costs a point
+      if (gameState['score'] < 1) {
+        // Currently nothing happens though in theory it should end the game
+        return;
+      } else {
+        tempState['score'] = tempState['score'] - 1;
+      }
+    } else {
+      tempState['numRefreshes'] = tempState['numRefreshes'] - 1;
+    }
+
+    // Refresh detail and story and decrement number of refreshes
+    tempState = refreshDetails(tempState);
+
+    setGameState(tempState);
+    return;
+  }
 
 
   // Function to check if all the connectors are valid
@@ -206,8 +301,7 @@ function App() {
     return [isValid, isConnecting];
   }
 
-
-  ////////////////////// STATE INITIALIZERS
+  /////////////////////////////// STATE INITIALIZERS //////////////////////////////
   const initialState = {
     detailList: generateDetailList(NUMDETAILS),
     storyDetails: [],
@@ -220,20 +314,32 @@ function App() {
     isConnecting: false,
     isComplete: false,
     IO: possibleConnectors[ getRandomInt(possibleConnectors.length) ],
+    numRefreshes: 0,
+    score: 0,
+    scoreNeeded: 3,
   };
   
   const [gameState, setGameState] = useState(initialState);
+
+  const [showRefreshEarned, setShowRefreshEarned] = useState(false);
+  const [showCompleteModal, setShowCompleteModal] = useState(false);
 
   return (
     <StyledAppDiv>
 
       <Sidebar 
-
+        handleRefreshClick={handleRefreshClick}
+        numRefreshes={gameState['numRefreshes']}
+        refreshEarned={showRefreshEarned}
+        refreshEarnedTime={refreshEarnedTime}
+        score={gameState['score']}
+        scoreNeeded={gameState['scoreNeeded']}
       />
       
       <PlayArea 
         isValid = {gameState['isValid']}
         isComplete = {gameState['isComplete']}
+        showCompleteModal = {showCompleteModal}
         completeModalTime = {completeModalTime}
         detailList = {gameState['detailList']}
         handleBoardClick = {handleBoardClick}

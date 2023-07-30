@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import StoryCompleteModal from './story_complete_modal.js';
-import Story from './story.js'
+import Footer from './footer.js';
 import DetailBoard from './detail_board.js';
 
 const StyledPlayArea = styled.div`
@@ -24,7 +24,7 @@ const PlayArea = (props) => {
     return (
         <StyledPlayArea >
             
-            {(props['isValid'] && props['isComplete']) && 
+            {(props.showCompleteModal) && 
                 <StoryCompleteModal duration={props.completeModalTime}/>
             }
 
@@ -33,10 +33,10 @@ const PlayArea = (props) => {
                 handleBoardClick = {props.handleBoardClick}
             />
 
-            <Story 
-                storyDetails = {props['storyDetails']}
+            <Footer 
+                storyDetails = {props.storyDetails}
                 handleStoryClick = {props.handleStoryClick}
-                IO = {props['IO']}
+                IO = {props.IO}
             />
 
             { 

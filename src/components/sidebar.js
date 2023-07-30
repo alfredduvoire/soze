@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import RefreshContainer from './refresh_container';
+import ScoreContainer from './score_container';
 
 const StyledSidebar = styled.div`
     height: 100%;
@@ -20,8 +22,17 @@ const Sidebar = (props) => {
     
     return (
         <StyledSidebar >
-            <div>Refresh Counter</div>
-            <div>Score Tracker</div>
+            <RefreshContainer 
+                numRefreshes={props.numRefreshes}
+                handleRefreshClick={props.handleRefreshClick}        
+                refreshEarned={props.refreshEarned}
+                refreshEarnedTime={props.refreshEarnedTime}
+            />
+            
+            <ScoreContainer 
+                score={props.score}
+                scoreNeeded={props.scoreNeeded}
+            />
         </StyledSidebar>
     );
 }
