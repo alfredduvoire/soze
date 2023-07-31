@@ -10,6 +10,10 @@ const StyledRefreshContainer = styled.div`
     align-items: center;
 `;
 
+const StyledCostDiv = styled.div`
+    opacity: ${props => (props.numRefreshes === 0) ? 1 : 0};
+`;
+
 const RefreshContainer = (props) => {
     
     return (
@@ -22,9 +26,9 @@ const RefreshContainer = (props) => {
                     refreshEarned={props.refreshEarned}
                     refreshEarnedTime={props.refreshEarnedTime}
                 />
-            {(props.numRefreshes === 0) &&
-                <div>- Costs 1 Star -</div>
-            }
+                <StyledCostDiv
+                    numRefreshes = {props.numRefreshes}
+                >- Costs 1 Star -</StyledCostDiv>
         </StyledRefreshContainer>
 
     );

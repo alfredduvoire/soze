@@ -7,6 +7,8 @@ const StyledBoardDiv = styled.div`
     padding: 1em;
     box-sizing: border-box;
 
+    margin: 1em 0;
+
     display: flex;
     flex-direction: row;
     justify-content: space-between;

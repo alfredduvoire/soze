@@ -6,11 +6,11 @@ const refreshEarnedAnimation = keyframes`
         opacity: 0;
     }
     20% {
-        transform: scale( 3 );
+        transform: scale( 2 );
         opacity: 1;
     }
     80% {
-        transform: scale( 3 );
+        transform: scale( 2 );
         opacity: 1;
     }
     100% {
@@ -21,7 +21,7 @@ const refreshEarnedAnimation = keyframes`
 
 const StyledRefreshEarned = styled.div`
     width: 100%;
-    margin-top: 10px;
+    margin-top: 1.5em;
 
     text-align: center;
 

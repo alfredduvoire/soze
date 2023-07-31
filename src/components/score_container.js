@@ -12,6 +12,7 @@ const StyledScoreContainer = styled.div`
     align-items: center;
 
     font-size: 1.5em;
+    color: #444422;
 `;
 
 const ScoreContainer = (props) => {

@@ -8,6 +8,8 @@ const StyledFooter = styled.div`
     width: 100%;
     height: 9em;
 
+    margin-bottom: 1em;
+
     display: flex;
     flex-direction: row;
 

@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import StoryCompleteModal from './story_complete_modal.js';
 import Footer from './footer.js';
 import DetailBoard from './detail_board.js';
+import InvalidWarning from './invalid_warning_container.js';
+import DetectiveContainer from './detective_container.js';
+import DetectiveName from './detective_name.js';
 
 const StyledPlayArea = styled.div`
     height: 100%;
@@ -10,7 +13,7 @@ const StyledPlayArea = styled.div`
 
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     overflow: hidden;
 
@@ -34,22 +37,24 @@ const PlayArea = (props) => {
                 handleBoardClick = {props.handleBoardClick}
             />
 
+            <DetectiveContainer />
+
+            <InvalidWarning 
+                showWarning = {
+                    (( !(props['isConnecting']) && props['storyDetails'].length > 0 ) || 
+                        (!(props['isValid']) && props['detailTypeCount']['who'] > 0 
+                        && props['detailTypeCount']['where'] > 0 
+                        && props['detailTypeCount']['when'] > 0))
+                }
+            />
+
             <Footer 
                 storyDetails = {props.storyDetails}
                 handleStoryClick = {props.handleStoryClick}
                 IO = {props.IO}
             />
 
-            { 
-                // TODO: This needs to be turned into a component at some point 
-                (( !(props['isConnecting']) && props['storyDetails'].length > 0 ) || 
-                (!(props['isValid']) && props['detailTypeCount']['who'] > 0 
-                    && props['detailTypeCount']['where'] > 0 
-                    && props['detailTypeCount']['when'] > 0)) && 
-                    <font color="red">
-                    <p />This story doesn't add up!
-                    </font>
-            }
+            <DetectiveName />
             
         </StyledPlayArea>
     );

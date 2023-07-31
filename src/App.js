@@ -208,6 +208,7 @@ function App() {
     if (tempState['isValid'] && tempState['isComplete']) {
 
         // We need to set state so that the animation fires? 
+        
         setShowCompleteModal(true);
         
         setTimeout(() => {
