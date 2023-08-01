@@ -8,6 +8,10 @@ const StyledRefreshContainer = styled.div`
     
     justify-content: space-between;
     align-items: center;
+
+    text-align: center;
+    // font-size: 1.5em;
+    color: #333333;
 `;
 
 const StyledCostDiv = styled.div`
@@ -18,17 +22,18 @@ const RefreshContainer = (props) => {
     
     return (
         <StyledRefreshContainer>
+            <b>REFRESH</b>
             <RefreshButton 
                 numRefreshes={props.numRefreshes}
                 handleRefreshClick={props.handleRefreshClick}        
             />
+                <StyledCostDiv
+                    numRefreshes = {props.numRefreshes}
+                >- Costs 1 Star -</StyledCostDiv>
                 <RefreshEarned 
                     refreshEarned={props.refreshEarned}
                     refreshEarnedTime={props.refreshEarnedTime}
                 />
-                <StyledCostDiv
-                    numRefreshes = {props.numRefreshes}
-                >- Costs 1 Star -</StyledCostDiv>
         </StyledRefreshContainer>
 
     );

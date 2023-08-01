@@ -1,15 +1,24 @@
 import styled from 'styled-components';
 
-const StyledRefreshButton = styled.button`
+const StyledRefreshButton = styled.div`
+    width: 100%;
     aspect-ratio: 1;
+    background-image: url("https://raw.githubusercontent.com/dcstrandberg/soze/main/public/refresh-image.png");
+    background-position: bottom right 100px;
     
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     font-weight: bold;
-    font-size: 1.5em;
+    font-size: 1.2em;
+    color: #333333;
+    text-align: center;
 
-    padding: 10px;
+    // padding: 10px;
 
-    border: 2px solid green;
-    border-radius: 5px;
+    // border: 2px solid green;
+    // border-radius: 5px;
 `;
 
 const RefreshButton = (props) => {

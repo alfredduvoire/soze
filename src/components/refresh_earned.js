@@ -21,7 +21,7 @@ const refreshEarnedAnimation = keyframes`
 
 const StyledRefreshEarned = styled.div`
     width: 100%;
-    margin-top: 1.5em;
+    margin-top: -1em;
 
     text-align: center;
 
