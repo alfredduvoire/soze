@@ -24,35 +24,53 @@ const inOut = keyframes`
 `;
 
 const StyledStoryCompleteModal = styled.div`
-  height: 100px;
-  width: 400px;
+	position: relative;
+  width: 30%;
+  bottom: 150px;
+  left: 30px;
+
   display: flex;
-  text-wrap: wrap;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
-  padding: 10px;
+  aspect-ratio: 16 / 9;
+  padding: 20px;
 
-  background: #333333;
-  color: #FFFFFF;
+	background: #DDDDDD;
+	border-radius: .4em;
 
+  border: 3px solid #FFFFFF;
+  // box-shadow: 3px 3px 0px #FFC000, inset 3px 3px 0px #FFC000;
+
+  
   opacity: 0;
   z-index: -1;
 
-  animation-name: ${inOut};
+  animation-name: ${props => props.showCompleteModal ? inOut : null};
   animation-duration: ${props => "" + props.duration + "ms"};
 
   text-align: center;
+  color: #333333;
 
-  position: absolute; 
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  &:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 0;
+    height: 0;
+    border: 24px solid transparent;
+    border-left-color: #DDDDDD;
+    border-right: 0;
+    margin-top: -24px;
+    margin-right: -24px;
+  }
 `;
 
 const StoryCompleteModal = (props) => {
     
     return (
-        <StyledStoryCompleteModal duration={props.duration}>
+        <StyledStoryCompleteModal showCompleteModal={props.showCompleteModal} duration={props.duration}>
         STORY CHECKS OUT... 
         <br />
         BUT I'VE GOT ANOTHER QUESTION

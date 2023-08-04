@@ -20,7 +20,7 @@ const StyledAppDiv = styled.div`
 
 function App() {
 
-  const NUMDETAILS = 16;
+  const NUMDETAILS = 14; // Updating this to try out grid formatting
   const NUMFORSTORY = 3;
   const MAXSCORENEEDED = 8;
 
@@ -216,10 +216,18 @@ function App() {
           setShowCompleteModal(false);
         }, completeModalTime + 200);
         
-        tempState = handleCompletedStory(tempState);
+        setGameState(tempState);
     }
+    
+    // This is super janky, but seems to be working
+    // Potential race condition....
+    setTimeout(() => {
+      if (tempState['isValid'] && tempState['isComplete']) {
+        tempState = handleCompletedStory(tempState);
+      }
 
-    setGameState(tempState);
+      setGameState(tempState);
+    }, (tempState['isValid'] && tempState['isComplete']) ? completeModalTime + 200 : 0);
 
     return;
   };

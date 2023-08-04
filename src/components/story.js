@@ -1,18 +1,23 @@
 import Detail from "./detail.js"
 import DetailGap from "./detail_gap.js";
 
+import { useRef, useEffect } from "react";
+
 import styled from 'styled-components'
 
 const StyledStoryDiv = styled.div`
-    background: #FFFFDD;
+    // background: #FFFFDD;
+    box-sizing: border-box;
 
-    width: 100%;
+    width: auto;
+    height: 100%;
 
     display: flex;
     justify-content: start;
     align-items: center;
     flex-wrap: nowrap;
-    overflow: scroll;
+    overflow-x: scroll;
+    overflow-y: hidden;
     -ms-overflow-style: none;
     scrollbar-width: none;
     ::-webkit-scrollbar { display: none; }
@@ -20,6 +25,12 @@ const StyledStoryDiv = styled.div`
     `;
 
 const Story = (props) => {
+    const divRef = useRef(null);
+
+    useEffect(() => {
+        divRef.current.scrollLeft += 9999;
+      }, [props.storyDetails.length]);
+
     // create the list of details from the props
     let detailList = props.storyDetails.map( (x, i) => {
         return (
@@ -38,9 +49,9 @@ const Story = (props) => {
     // Append to the beginning and end
 
     return (
-        <StyledStoryDiv>
+        <StyledStoryDiv ref={divRef}>
             {detailList}
-            <DetailGap />
+            {!(props.isComplete) && <DetailGap />}
         </StyledStoryDiv>
     );
 }

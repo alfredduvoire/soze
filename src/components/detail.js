@@ -16,22 +16,36 @@ const select = keyframes`
     }
 `;
 
+const handleGridPlacement = (idx) => {
+    if (idx < 6) {
+        return {row: 1, column: idx + 1};
+    } else if (idx < 9) {
+        return {row: 2, column: idx - 5};
+    } else if (idx < 10) {
+        return {row: 2, column: idx - 3};
+    } else if (idx < 13) {
+        return {row: 3, column: idx - 9};
+    } else if (idx < 14) {
+        return {row: 3, column: idx - 7};
+    } else {
+        return;
+    }
+};
+
 const StyledDetailImg = styled.img`
-    margin: ${props => (props.parent === "story") ? "0.5em 0em" : "0.5em"};
-    height: 7em;
-    width: 7em;
+    // margin: ${props => (props.parent === "story") ? "0.5em 0em" : "0.5em"};
+    margin: 0;
+    // width: 80%;
+    aspect-ratio: 1 / 1;
+    height: 80%;
     object-fit: contain;
-
-    // filter: contrast( ${props => props.selected ? 0.1 : 1} );
-    // transition: filter 401ms;
-
+   
+    grid-row: ${props => handleGridPlacement(props.idx).row};
+    grid-column: ${props => handleGridPlacement(props.idx).column};
 
     animation-name:  ${props => props.selected ? select : null};
     animation-duration: 200ms;
     animation-fill-mode: forwards;
-
-    // border: 1px solid black;
-    // border-radius: 3px;
 `;
 
 
@@ -50,6 +64,7 @@ const Detail = (props) => {
                 selected={props.selected}
                 parent={props.parent}
                 onClick={() => props.handleClick(props.idx)}
+                idx={props.idx}
             />
     );
 }

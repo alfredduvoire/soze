@@ -27,18 +27,17 @@ const PlayArea = (props) => {
     
     return (
         <StyledPlayArea >
-            
-            {(props.showCompleteModal) && 
-                <StoryCompleteModal duration={props.completeModalTime}/>
-            }
 
             <DetailBoard
                 detailList = {props['detailList']}
                 handleBoardClick = {props.handleBoardClick}
             />
 
-            <DetectiveContainer />
-
+            <DetectiveContainer 
+                showCompleteModal = {props.showCompleteModal} 
+                duration={props.completeModalTime}
+            />
+            
             <InvalidWarning 
                 showWarning = {
                     (( !(props['isConnecting']) && props['storyDetails'].length > 0 ) || 
@@ -52,6 +51,7 @@ const PlayArea = (props) => {
                 storyDetails = {props.storyDetails}
                 handleStoryClick = {props.handleStoryClick}
                 IO = {props.IO}
+                isComplete = {props.isComplete}
             />
 
             <DetectiveName />

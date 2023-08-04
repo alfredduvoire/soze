@@ -6,7 +6,10 @@ import StoryContainer from './story_container.js';
 
 const StyledFooter = styled.div`
     width: 100%;
-    height: 9em;
+    height: 20%;
+    box-sizing: border-box;
+
+    z-index: 10;
 
     margin-bottom: 1em;
 
@@ -15,9 +18,10 @@ const StyledFooter = styled.div`
 
     justify-content: space-between;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
 
-    border: 2px solid black;
+    // border: 2px solid black;
 `;
 
 const Footer = (props) => {
@@ -31,6 +35,7 @@ const Footer = (props) => {
                 storyDetails = {props['storyDetails']}
                 handleStoryClick = {props.handleStoryClick}
                 IO = {props['IO']}
+                isComplete = {props.isComplete}
             />
 
             <PreviewContainer />
