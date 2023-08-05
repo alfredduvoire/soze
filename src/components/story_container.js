@@ -13,7 +13,8 @@ const StyledStoryContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: visible;
 
     border: 3px solid #333333;
     border-radius: 5px;

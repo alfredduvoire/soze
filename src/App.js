@@ -112,8 +112,9 @@ function App() {
 
     }
 
-    // Add one to the score
+    // Add one to the score and update the multiplier
     tempState['score'] = tempState['score'] + 1;
+    tempState['multiplier'] = tempState['multiplier'] + 1;
 
     // Check if we've hit the scoreNeeded
     if (tempState['score'] === tempState['scoreNeeded']) {
@@ -139,21 +140,30 @@ function App() {
     tempState['isConnecting'] = false;
     
     // Change IO Connectors
-    tempState['IO'] = possibleConnectors[ getRandomInt(possibleConnectors.length) ];
+    tempState['IO'] = tempState['nextIO'];
     
-    // Refresh missing details in list
-    const refreshIndices = tempState['storyDetails'].map( (x) => {
-      return x['boardIdx'];
-    });
+    tempState['nextIO'] = possibleConnectors[ getRandomInt(possibleConnectors.length) ];
     
-    for (let i = 0; i < refreshIndices.length; i++) {
-      tempState['detailList'][ refreshIndices[i] ] = generateDetailList(1)[0];
+    
+    
+    // TEMP RULE: Only refresh detailBoard if board is empty
+    if (tempState['detailList'].length === 0) {
+      
+      // Refresh missing details in list
+      const refreshIndices = tempState['storyDetails'].map( (x) => {
+        return x['boardIdx'];
+      });
+      
+      for (let i = 0; i < NUMDETAILS; i++) {
+        tempState['detailList'][i] = generateDetailList(NUMDETAILS);
+      }
     }
-
+  
     // Clear the story
     tempState['storyDetails'] = [];
-    
-    return tempState;
+      
+      return tempState;
+
   };
 
 
@@ -273,9 +283,14 @@ function App() {
         setPointLossIdx(gameState['score']); 
         
         tempState['score'] = tempState['score'] - 1;
+        // And reset the multiplier
+        tempState['multiplier'] = 1;
+
       }
     } else {
       tempState['numRefreshes'] = tempState['numRefreshes'] - 1;
+      // And reset the multiplier
+      tempState['multiplier'] = 1;
     }
 
     // Refresh detail and story and decrement number of refreshes
@@ -328,9 +343,11 @@ function App() {
     isConnecting: false,
     isComplete: false,
     IO: possibleConnectors[ getRandomInt(possibleConnectors.length) ],
+    nextIO: possibleConnectors[ getRandomInt(possibleConnectors.length) ],
     numRefreshes: 0,
     score: 0,
     scoreNeeded: 3,
+    multiplier: 1,
   };
   
   const [gameState, setGameState] = useState(initialState);
@@ -366,6 +383,8 @@ function App() {
         IO = {gameState['IO']}
         isConnecting = {gameState['isConnecting']}
         detailTypeCount = {gameState['detailTypeCount']}
+        nextIO = {gameState['nextIO']}
+        multiplier={gameState['multiplier']}
       />
 
     </StyledAppDiv>

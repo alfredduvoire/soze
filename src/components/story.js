@@ -17,7 +17,7 @@ const StyledStoryDiv = styled.div`
     align-items: center;
     flex-wrap: nowrap;
     overflow-x: scroll;
-    overflow-y: hidden;
+    overflow-y: visible;
     -ms-overflow-style: none;
     scrollbar-width: none;
     ::-webkit-scrollbar { display: none; }

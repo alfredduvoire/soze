@@ -5,6 +5,7 @@ import RefreshEarned from './refresh_earned';
 const StyledRefreshContainer = styled.div`
     display: flex;
     flex-direction: column;
+    width: 100%;
     
     justify-content: space-between;
     align-items: center;

@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 
 const StyledRefreshButton = styled.div`
-    width: 100%;
+    width: 65%;
     aspect-ratio: 1;
     background-image: url("https://raw.githubusercontent.com/dcstrandberg/soze/main/public/refresh-image.png");
-    background-position: bottom right 100px;
-    
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
     display: flex;
     justify-content: center;
     align-items: center;

@@ -5,7 +5,7 @@ position: relative;
 color: #333333;
 margin: 0;
 height: 80%;
-${props => props.idx !== 3 ? "aspect-ratio: 1 / 4" : ""};
+aspect-ratio: 1 / 4;
 box-sizing: border-box;
 
 padding-bottom: 14px;

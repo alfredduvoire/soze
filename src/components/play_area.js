@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import StoryCompleteModal from './story_complete_modal.js';
 import Footer from './footer.js';
 import DetailBoard from './detail_board.js';
 import InvalidWarning from './invalid_warning_container.js';
@@ -10,6 +9,7 @@ import DetectiveName from './detective_name.js';
 const StyledPlayArea = styled.div`
     height: 100%;
     width: 85%;
+    box-sizing: border-box;
 
     display: flex;
     flex-direction: column;
@@ -20,7 +20,7 @@ const StyledPlayArea = styled.div`
     padding: 1em;
     margin: 0;
 
-    border: 1px solid red;
+    // border: 1px solid red;
 `;
 
 const PlayArea = (props) => {
@@ -52,6 +52,8 @@ const PlayArea = (props) => {
                 handleStoryClick = {props.handleStoryClick}
                 IO = {props.IO}
                 isComplete = {props.isComplete}
+                nextIO = {props.nextIO}
+                multiplier={props.multiplier}
             />
 
             <DetectiveName />

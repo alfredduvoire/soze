@@ -15,7 +15,7 @@ const StyledSidebar = styled.div`
     justify-content: space-around;
     align-items: center;
 
-    border: 1px solid green;
+    // border: 1px solid green;
 `;
 
 const Sidebar = (props) => {

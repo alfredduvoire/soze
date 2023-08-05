@@ -27,7 +27,7 @@ const DetailGap = (props) => {
 
     return (
         <StyledDetailGap>
-            +
+            ?
         </StyledDetailGap>
     );
 }

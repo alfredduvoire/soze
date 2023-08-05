@@ -8,6 +8,7 @@ const StyledFooter = styled.div`
     width: 100%;
     height: 20%;
     box-sizing: border-box;
+    padding: 0 5px 5px 5px;
 
     z-index: 10;
 
@@ -29,7 +30,9 @@ const Footer = (props) => {
     return (
         <StyledFooter >
 
-            <MultiplierContainer />
+            <MultiplierContainer
+            multiplier={props.multiplier}
+            />
 
             <StoryContainer 
                 storyDetails = {props['storyDetails']}
@@ -38,7 +41,9 @@ const Footer = (props) => {
                 isComplete = {props.isComplete}
             />
 
-            <PreviewContainer />
+            <PreviewContainer
+                nextIO = {props.nextIO}
+            />
 
         </StyledFooter>
     );
