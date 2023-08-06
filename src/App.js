@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import Sidebar from './components/sidebar.js';
 import PlayArea from './components/play_area.js';
+import StoryCompleteModal from './components/story_complete_modal';
 
 const StyledAppDiv = styled.div`
   display: flex;
@@ -32,10 +33,11 @@ function App() {
   const possibleTypes = ['who', 'where', 'when'];
 
   /////////////////////// Animation Timing Constants
-  const completeModalTime = 2000;
+  const completeModalTime = 2500;
   const refreshEarnedTime = 2000;
   const newPointTime = 1000;
   const blankPointTime = 500;
+  const invalidStoryTime = 500;
    
   /////////////////////////////// HELPER FUNCTIONS ////////////////////////////
 
@@ -167,6 +169,38 @@ function App() {
   };
 
 
+  // Function to move from one level to another
+  const handleLevelComplete = (oldState) => {
+    let tempState = {...oldState};
+    // We need to clear the points and add that to the overall score (which currently doesn't exist)
+    // Figure out what the new Point Max is for the new level
+    // Refresh all the details
+    // Update the detective Name
+    // Increment the level #
+    // Update the level-twist (e.g., No doubles, etc.)
+
+    // Most of these should have some animation associated with it
+
+
+  };
+
+
+  // Function for displaying Dialogue so that it can happen with different times
+  const displayDialogue = (txt) => {
+    let tempStory = {...storyState};
+
+    tempStory['dialogueText'] = txt;
+    setStoryState(tempStory);
+    setShowCompleteModal(true);
+
+    setTimeout(() => {
+      setShowCompleteModal(false);
+    }, completeModalTime + 200);
+
+    return;
+  };
+
+
   /////////////////////////////// CLICK HANDLERS //////////////////////////////
 
   // Handle Click on Details on Board
@@ -176,6 +210,7 @@ function App() {
     // Call game-state check
 
     let tempState = {...gameState};
+    let tempStory = {...storyState};
 
     // First check whether it's already selected
     if (tempState['detailList'][idx]['selected']) {
@@ -203,7 +238,9 @@ function App() {
     // Check to see if the connections all match
     [ tempState['isValid'], tempState['isConnecting'] ] = checkStoryConnections(tempState['storyDetails'], tempState['IO']);
 
-    if ( tempState['isValid']  ) {
+    // AH ok, so apparently I used to only allow it to be completed if it was valid
+    // But now I think we want to change it so it always checks whether it's complete
+    // if ( tempState['isValid']  ) {
     
       // Then Check if the story is complete
       if (tempState['detailTypeCount']['who'] > 0 
@@ -212,27 +249,72 @@ function App() {
           
         tempState['isComplete'] = true;
       }
-    }
+    // }
       
-    // Call next function
-    if (tempState['isValid'] && tempState['isComplete']) {
+    // If the story is complete, we need to check if it's valid...
+    if (tempState['isComplete']) {
 
-        // We need to set state so that the animation fires? 
+      if (tempState['isValid']) {
+
+        // Display congratulations text                 
+        let txt = storyCompleteDialogue[getRandomInt(storyCompleteDialogue.length)];
+        displayDialogue(txt);
+
+        setGameState(tempState);
+      } else {
+
+        // If the story is NOT valid...
+        // We need to 
+        // 1. Display some bad animation & dialogue
+        // 2. Clear the story
+        // 3. Remove a point & set mult to 1x
+        // 4. And potentially end the game
         
-        setShowCompleteModal(true);
+        // 1. Display the error animation & dialogue
+        let txt = incorrectDialogues[getRandomInt(incorrectDialogues.length)];
+        displayDialogue(txt);
+        
+        // Also set story complete false
+        tempState['isComplete'] = false;
+
+        setInvalidStory(true);
         
         setTimeout(() => {
-          // I think it's best practice to do this, so that we dont' have state race conditions
-          setShowCompleteModal(false);
-        }, completeModalTime + 200);
-        
-        setGameState(tempState);
+          setInvalidStory(false);
+
+          // 2. Clear the story
+          // We'll use the handleStoryClick function on all the indices
+          let loopnum = tempState['storyDetails'].length;
+          for (let i = 0; i < loopnum; i++) {
+            tempState = handleStoryClick(0, tempState);
+          }
+          
+          // 3. Remove a point & set mult to 1x
+          if (tempState['score'] > 0) {
+  
+            setPointLossIdx(gameState['score']); 
+            tempState['score'] = tempState['score'] - 1;
+            tempState['multiplier'] = 1;
+          } else {
+            // TODO THIS IS WHERE THE GAME WOULD END
+            // THIs actually should be checked first, and the stuff before this should be moved after
+            tempStory['dialogueText'] = gameLossDialogues[getRandomInt(gameLossDialogues.length)];
+            setStoryState(tempStory);
+            // TODO and end the game...
+          }
+          // Not sure if best to do this here or not -- worried about race conditions
+          setGameState(tempState);
+        }, invalidStory + 200);
+
+      } 
     }
     
     // This is super janky, but seems to be working
     // Potential race condition....
     setTimeout(() => {
       if (tempState['isValid'] && tempState['isComplete']) {
+        tempStory['dialogueText'] = storyCompleteDialogue[getRandomInt(storyCompleteDialogue.length)];
+        setStoryState(tempStory);
         tempState = handleCompletedStory(tempState);
       }
 
@@ -244,12 +326,13 @@ function App() {
   
 
   // Handle Click on Story Details
-  const handleStoryClick = (idx) => {
+  const handleStoryClick = (idx, oldState = null) => {
     // Adjust Selected Status of Detail
     // Remove copy of Detail from Story list
     // Call game-state check
     
-    let tempState = {...gameState};
+    // If we're passed in a state to use, then use that, otherwise pull the current state
+    let tempState = (oldState !== null) ? {...oldState} : {...gameState};
     
     tempState['detailList'][ tempState['storyDetails'][idx]['boardIdx'] ]['selected'] = false;
     
@@ -262,10 +345,15 @@ function App() {
     // If there's still details in the story, Check to see if the connections all match
     if (tempState['storyDetails'].length > 0 ) {
       [ tempState['isValid'], tempState['isConnecting'] ] = checkStoryConnections(tempState['storyDetails'], tempState['IO']);
+    } else {
+      [tempState['isValid'], tempState['isConnecting'] ] = [false, false];
     }
 
-    setGameState(tempState);
-    return;
+    // THis is hacky -- it's because sometimes we'd rather have it pass the tempstate back out instead of settting it within the helper
+    if (oldState === null) {
+      setGameState(tempState);
+    }
+    return tempState;
   };
 
   // Handle Click on Refresh Button
@@ -330,6 +418,33 @@ function App() {
     return [isValid, isConnecting];
   }
 
+  /////////////////////////////// STORY THINGS //////////////////////////////
+  const incorrectDialogues = [
+    ["That's not what you said earlier...", "You're lying!"],
+    ["I'm losing my patience.", "You better straigthen up!"],
+  ];
+
+  const storyCompleteDialogue = [
+    ["Story checks out", "But I've got another question..."],
+    ["That makes sense.", "But what about..."],
+  ];
+
+  const levelCompleteDialogue = [
+    ["Alright", "You're free to go"],
+    ["That's enough", "You're in the clear"],
+    ["We're done here.", "Thanks for your cooperation."],
+  ];
+
+  const gameLossDialogues = [
+    ["AHA!", "You're caught red-handed"],
+    ["Got you!", "You're under arrest!"],
+    ["No more lies", "It's a cell for you"],
+  ];
+
+  const detectiveNames = [
+    "Marimoto", "Frederico", "Navokov", "Frezia", "Mazuki",
+  ]
+
   /////////////////////////////// STATE INITIALIZERS //////////////////////////////
   const initialState = {
     detailList: generateDetailList(NUMDETAILS),
@@ -348,13 +463,22 @@ function App() {
     score: 0,
     scoreNeeded: 3,
     multiplier: 1,
+    level: 1,
   };
   
   const [gameState, setGameState] = useState(initialState);
 
+  const initialStory = {
+    dialogueText: storyCompleteDialogue[getRandomInt(storyCompleteDialogue.length)],
+    detectiveName: detectiveNames[getRandomInt(detectiveNames.length)],
+  }
+
+  const [storyState, setStoryState] = useState(initialStory);
+
   const [showRefreshEarned, setShowRefreshEarned] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [pointLossIdx, setPointLossIdx] = useState(0);
+  const [invalidStory, setInvalidStory] = useState(false);
 
   return (
     <StyledAppDiv>
@@ -385,6 +509,8 @@ function App() {
         detailTypeCount = {gameState['detailTypeCount']}
         nextIO = {gameState['nextIO']}
         multiplier={gameState['multiplier']}
+        detectiveName={storyState['detectiveName']}
+        dialogueText={storyState['dialogueText']}
       />
 
     </StyledAppDiv>

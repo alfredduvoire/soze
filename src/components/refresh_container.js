@@ -26,7 +26,9 @@ const RefreshContainer = (props) => {
             <b>REFRESH</b>
             <RefreshButton 
                 numRefreshes={props.numRefreshes}
-                handleRefreshClick={props.handleRefreshClick}        
+                handleRefreshClick={props.handleRefreshClick}  
+                refreshEarned={props.refreshEarned}
+                refreshEarnedTime={props.refreshEarnedTime}
             />
                 <StyledCostDiv
                     numRefreshes = {props.numRefreshes}

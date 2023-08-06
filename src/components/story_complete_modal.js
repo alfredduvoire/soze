@@ -30,6 +30,7 @@ const StyledStoryCompleteModal = styled.div`
   left: 30px;
 
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
@@ -68,12 +69,17 @@ const StyledStoryCompleteModal = styled.div`
 `;
 
 const StoryCompleteModal = (props) => {
+
+  const dialogueText = props.dialogueText.map((x) => {
+    return (
+      <b>{x}<br /></b>
+    );
+
+  });
     
     return (
         <StyledStoryCompleteModal showCompleteModal={props.showCompleteModal} duration={props.duration}>
-        STORY CHECKS OUT... 
-        <br />
-        BUT I'VE GOT ANOTHER QUESTION
+        {dialogueText}
         </StyledStoryCompleteModal>
     );
 }

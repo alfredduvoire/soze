@@ -24,7 +24,11 @@ const DetectiveContainer = (props) => {
     
     return (
         <StyledDetectiveContainer>
-            <StoryCompleteModal showCompleteModal={props.showCompleteModal} duration={props.duration}/>
+            <StoryCompleteModal 
+                showCompleteModal={props.showCompleteModal} 
+                duration={props.duration}
+                dialogueText={props.dialogueText}
+            />
             <DetectiveImage src="https://raw.githubusercontent.com/dcstrandberg/soze/main/public/detective-1.png" />
         </StyledDetectiveContainer>
     );

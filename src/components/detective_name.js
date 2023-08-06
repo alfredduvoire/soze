@@ -15,7 +15,7 @@ const DetectiveName = (props) => {
     
     return (
         <StyledDetectiveName>
-            Interrogation #1: Detective Marimoto
+            Interrogation #{props.level}: Detective {props.detectiveName}
         </StyledDetectiveName>
     );
 }

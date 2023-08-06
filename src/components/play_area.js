@@ -36,6 +36,7 @@ const PlayArea = (props) => {
             <DetectiveContainer 
                 showCompleteModal = {props.showCompleteModal} 
                 duration={props.completeModalTime}
+                dialogueText={props.dialogueText}
             />
             
             <InvalidWarning 
@@ -56,7 +57,10 @@ const PlayArea = (props) => {
                 multiplier={props.multiplier}
             />
 
-            <DetectiveName />
+            <DetectiveName
+                detectiveName={props.detectiveName}
+                level={1}
+            />
             
         </StyledPlayArea>
     );

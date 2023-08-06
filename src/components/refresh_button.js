@@ -1,4 +1,26 @@
-import styled from 'styled-components';
+import styled, {keyframes} from 'styled-components';
+
+const refreshEarnedAnimation = keyframes`
+    0% {
+        transform: rotate( 0 );
+    }
+    100% {
+        transform: rotate( 360deg );
+    }
+    `;
+    
+const onClickAnim = keyframes`
+    0% {
+        transform: scale( 1 );
+    }
+    50% {
+        transfom: scale(0.9);
+    }
+    100% {
+        transform: scale(1);
+    }
+    
+`;
 
 const StyledRefreshButton = styled.div`
     width: 65%;
@@ -17,10 +39,18 @@ const StyledRefreshButton = styled.div`
     color: #333333;
     text-align: center;
 
+    animation-name: ${props => props.refreshEarned ? refreshEarnedAnimation : null};
+    animation-duration: ${props => "" + props.refreshEarnedTime + "ms"};
+
     // padding: 10px;
 
     // border: 2px solid green;
     // border-radius: 5px;
+
+    &:active{
+        transform: scale(0.95);
+        // transition: transform 100ms; 
+    }
 `;
 
 const RefreshButton = (props) => {
@@ -28,6 +58,8 @@ const RefreshButton = (props) => {
     return (
         <StyledRefreshButton
             onClick={props.handleRefreshClick}
+            refreshEarned={props.refreshEarned}
+            refreshEarnedTime={props.refreshEarnedTime}
         >
             {props.numRefreshes}
         </StyledRefreshButton>

@@ -43,7 +43,9 @@ const StyledConnector = styled.div`
 const IO = (props) => {
 
     const connectorList = (num) => {
-        return new Array(num).fill(<StyledConnector ioIdx={props.idx}/>);
+        return new Array(num).fill(undefined).map((x, i) => {
+            return <StyledConnector key={i} ioIdx={props.idx}/>;
+        });
     }
 
     return (
