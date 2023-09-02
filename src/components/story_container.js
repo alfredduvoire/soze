@@ -31,6 +31,8 @@ const StoryContainer = (props) => {
                 storyDetails = {props['storyDetails']}
                 handleStoryClick = {props.handleStoryClick}
                 isComplete = {props.isComplete}
+                storyLengthRequirement={props.storyLengthRequirement}
+                slotColorList={props.slotColorList}
             />
             <IO num={props.IO[1]} idx={1} />
 

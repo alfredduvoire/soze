@@ -22,7 +22,7 @@ const StyledAppDiv = styled.div`
 function App() {
 
   const NUMDETAILS = 14; // Updating this to try out grid formatting
-  const NUMFORSTORY = 3;
+  const NUMFORSTORY = 5; // This is now used to determine how many slots are needed for a story
   const MAXSCORENEEDED = 8;
 
   const possibleConnectors = [
@@ -30,7 +30,12 @@ function App() {
     [2, 1], [2, 2], [2, 3],
     [3, 1], [3, 2], [3, 3],
   ];
+  // Will need to add in "Default" to this
   const possibleTypes = ['who', 'where', 'when'];
+
+  // Testing
+  // 
+  const slotColorList = ["any", "who", "any", "any", "any"];
 
   /////////////////////// Animation Timing Constants
   const completeModalTime = 2500;
@@ -93,12 +98,48 @@ function App() {
 
   };
 
+  
+  // Function to generate a list for slot colors
+  const generateSlotColorList = (num = NUMFORSTORY, difficulty = 1) => {
+
+    // TODO add "why"
+    const possibleColors = ["who", "when", "where",]
+
+    // I think it's more interesting if it's typically the same # as the level...
+    // Except it is still kind of random
+    difficulty = getRandomInt(difficulty + 1);
+
+    let tempList = new Array(num).fill("any");
+    let randList = [];
+
+    while (randList.length < difficulty) {
+      let candidateInt = getRandomInt(tempList.length);
+      if (randList.indexOf(candidateInt) === -1) {
+      randList.push(candidateInt);
+      tempList[candidateInt] = possibleColors[getRandomInt(possibleColors.length)];
+      }
+    }
+
+    return tempList;
+  };
+
+
+  // Function to handle a completed story that's wrong
+  const handleIncorrectStory = (oldState) => {
+    let tempState = {...oldState};
+
+    
+
+  };
+
 
   // Function to progress game logic after a turn is complete
   const handleCompletedStory = (oldState) => {
     let tempState = {...oldState};
 
-    // TODO: Point tracking logic goes here
+
+    // TODO: Figure out how refreshes are earned now...
+    /*
     // Check if it's longer than necessary, and give refresh
     if (tempState['storyDetails'].length > NUMFORSTORY) { 
       // Animate Refresh Earned
@@ -113,7 +154,7 @@ function App() {
       tempState['numRefreshes'] = tempState['numRefreshes'] + 1;
 
     }
-
+    */
     // Add one to the score and update the multiplier
     tempState['score'] = tempState['score'] + 1;
     tempState['multiplier'] = tempState['multiplier'] + 1;
@@ -123,19 +164,23 @@ function App() {
       // End the level
       // TODO: encapsulate this into its own function
       // TODO: Add level logic
+      tempState['level'] = tempState['level'] + 1;
 
       // Set the score back to 0 and generate a new max score
       tempState['score'] = 0;
       tempState['scoreNeeded'] = generateScoreNeeded();
     }
     
+    // Don't carea bout this anymore
+    /*
     // Reset Detail Type Counts
     tempState['detailTypeCount'] = {
       who: 0,
       where: 0,
       when: 0,
     };
-    
+    */
+
     // Reset valid + complete checks
     tempState['isValid'] = false;
     tempState['isComplete'] = false;
@@ -143,23 +188,25 @@ function App() {
     
     // Change IO Connectors
     tempState['IO'] = tempState['nextIO'];
-    
     tempState['nextIO'] = possibleConnectors[ getRandomInt(possibleConnectors.length) ];
     
+    // TODO: Is this fun? Modify the slot color list
+    tempState['slotColorList'] = generateSlotColorList(NUMFORSTORY, tempState['level']);
     
-    
+    /*
     // TEMP RULE: Only refresh detailBoard if board is empty
     if (tempState['detailList'].length === 0) {
-      
+      */
       // Refresh missing details in list
       const refreshIndices = tempState['storyDetails'].map( (x) => {
         return x['boardIdx'];
       });
       
-      for (let i = 0; i < NUMDETAILS; i++) {
-        tempState['detailList'][i] = generateDetailList(NUMDETAILS);
+      for (let i = 0; i < refreshIndices.length; i++) {
+        // tempState['detailList'][i] = generateDetailList(NUMDETAILS);
+        tempState['detailList'][refreshIndices[i]] = generateDetailList(1)[0];
       }
-    }
+    // }
   
     // Clear the story
     tempState['storyDetails'] = [];
@@ -232,24 +279,27 @@ function App() {
     }
     
     // Now here's where we do all the game checks and update logic, etc.
+    
+    // I don't think we actually care about this anymore
+    /*
     // Update detailTypeCount
     tempState['detailTypeCount'][ tempState['detailList'][idx]['type'] ] = tempState['detailTypeCount'][ tempState['detailList'][idx]['type'] ] + 1; // Not sure if I can -- this, so I'm doing it long-hand    
-    
-    // Check to see if the connections all match
-    [ tempState['isValid'], tempState['isConnecting'] ] = checkStoryConnections(tempState['storyDetails'], tempState['IO']);
+    */
 
-    // AH ok, so apparently I used to only allow it to be completed if it was valid
-    // But now I think we want to change it so it always checks whether it's complete
-    // if ( tempState['isValid']  ) {
-    
-      // Then Check if the story is complete
-      if (tempState['detailTypeCount']['who'] > 0 
-        && tempState['detailTypeCount']['where'] > 0 
-        && tempState['detailTypeCount']['when'] > 0) {
-          
-        tempState['isComplete'] = true;
-      }
-    // }
+    // Check to see if the connections all match
+    [ tempState['isValid'], tempState['isConnecting'] ] = checkStoryConnections(tempState['storyDetails'], tempState['IO'], tempState['slotColorList']);
+
+    // Changing how we define a "complete" story -- instead of one of each, we need just a length
+    // Then Check if the story is complete
+    /*
+    if (tempState['detailTypeCount']['who'] > 0 
+      && tempState['detailTypeCount']['where'] > 0 
+      && tempState['detailTypeCount']['when'] > 0) {
+    */
+    if (tempState['storyDetails'].length === NUMFORSTORY) {
+      
+      tempState['isComplete'] = true;
+    }
       
     // If the story is complete, we need to check if it's valid...
     if (tempState['isComplete']) {
@@ -344,7 +394,7 @@ function App() {
 
     // If there's still details in the story, Check to see if the connections all match
     if (tempState['storyDetails'].length > 0 ) {
-      [ tempState['isValid'], tempState['isConnecting'] ] = checkStoryConnections(tempState['storyDetails'], tempState['IO']);
+      [ tempState['isValid'], tempState['isConnecting'] ] = checkStoryConnections(tempState['storyDetails'], tempState['IO'], tempState['slotColorList']);
     } else {
       [tempState['isValid'], tempState['isConnecting'] ] = [false, false];
     }
@@ -390,7 +440,7 @@ function App() {
 
 
   // Function to check if all the connectors are valid
-  const checkStoryConnections = (storyDetails, IO) => {
+  const checkStoryConnections = (storyDetails, IO, slotColorList) => {
     let isValid = false;
     let isConnecting = false;
 
@@ -413,6 +463,24 @@ function App() {
           isValid = true;
         }
       }
+    }
+
+
+    // This is where we also check whether any of the color slots are correct
+    let tempValid = true;
+    for (let i = 0; i < storyDetails.length; i++) {
+      // Check if the color is wrong
+      if (slotColorList[i] !== storyDetails[i]['type']
+        && slotColorList[i] !== "any"
+      ) {
+        tempValid = false;
+      } 
+    }
+
+    // If tempValid is false, then the other two need to be made false
+    if (!tempValid) {
+      isValid = false;
+      isConnecting = false;
     }
 
     return [isValid, isConnecting];
@@ -464,6 +532,7 @@ function App() {
     scoreNeeded: 3,
     multiplier: 1,
     level: 1,
+    slotColorList: generateSlotColorList(),
   };
   
   const [gameState, setGameState] = useState(initialState);
@@ -511,6 +580,9 @@ function App() {
         multiplier={gameState['multiplier']}
         detectiveName={storyState['detectiveName']}
         dialogueText={storyState['dialogueText']}
+        storyLengthRequirement={NUMFORSTORY}
+        slotColorList={gameState["slotColorList"]}
+
       />
 
     </StyledAppDiv>

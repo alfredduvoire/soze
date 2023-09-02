@@ -1,19 +1,22 @@
 import Detail from "./detail.js"
-import DetailGap from "./detail_gap.js";
+// import DetailGap from "./detail_gap.js";
+import StorySlot from "./story_slot.js";
 
-import { useRef, useEffect } from "react";
+// import { useRef, useEffect } from "react";
 
 import styled from 'styled-components'
 
 const StyledStoryDiv = styled.div`
-    // background: #FFFFDD;
+    // background: #EEEEEE;
     box-sizing: border-box;
 
-    width: auto;
+    // width: auto;
+    width: 100%;
     height: 100%;
 
     display: flex;
-    justify-content: start;
+    // justify-content: start;
+    justify-content: space-evenly;
     align-items: center;
     flex-wrap: nowrap;
     overflow-x: scroll;
@@ -25,11 +28,11 @@ const StyledStoryDiv = styled.div`
     `;
 
 const Story = (props) => {
-    const divRef = useRef(null);
+    // const divRef = useRef(null);
 
-    useEffect(() => {
-        divRef.current.scrollLeft += 9999;
-      }, [props.storyDetails.length]);
+    // useEffect(() => {
+    //     divRef.current.scrollLeft += 9999;
+    //   }, [props.storyDetails.length]);
 
     // create the list of details from the props
     let detailList = props.storyDetails.map( (x, i) => {
@@ -46,12 +49,21 @@ const Story = (props) => {
         );
     });
 
+    // create the slots and include details in the needed ones
+    let slotList = props.slotColorList.map((x, i) => {
+        return (
+            <StorySlot
+                detail={(i < detailList.length) ? detailList[i] : undefined}
+                slotColor={x}
+            />
+        );
+    });
+
     // Append to the beginning and end
 
     return (
-        <StyledStoryDiv ref={divRef}>
-            {detailList}
-            {!(props.isComplete) && <DetailGap />}
+        <StyledStoryDiv>
+        {slotList}
         </StyledStoryDiv>
     );
 }

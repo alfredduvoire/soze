@@ -5,7 +5,8 @@ import PreviewContainer from './preview_container.js';
 import StoryContainer from './story_container.js';
 
 const StyledFooter = styled.div`
-    width: 100%;
+    // width: 100%;
+    width: auto;
     height: 20%;
     box-sizing: border-box;
     padding: 0 5px 5px 5px;
@@ -39,6 +40,8 @@ const Footer = (props) => {
                 handleStoryClick = {props.handleStoryClick}
                 IO = {props['IO']}
                 isComplete = {props.isComplete}
+                storyLengthRequirement={props.storyLengthRequirement}
+                slotColorList={props.slotColorList}
             />
 
             <PreviewContainer

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 const StyledIOBlock = styled.div`
 position: relative;
 color: #333333;
-margin: 0;
+margin: ${props => props.idx === 0 ? "0 8px 0 0" : "0 0 0 8px"};
 height: 80%;
 aspect-ratio: 1 / 4;
 box-sizing: border-box;
@@ -17,7 +17,7 @@ display: flex;
 flex-direction: column;
 justify-content: space-evenly;
 align-items: ${props => props.idx === 0 ? "start" : "end"};
-${props => props.idx === 1 ? "flex-grow: 1" : ""};
+// ${props => props.idx === 1 ? "flex-grow: 1" : ""};
 
 `;
 
@@ -32,7 +32,7 @@ ${props => props.idx === 0 ? "left: 10px" : "right: 10px"};
 const StyledConnector = styled.div`
     z-index: -1;
     background: #FFC000;
-    ${props => props.ioIdx === 1 ? "box-sizing: border-box" : ""};
+    // ${props => props.ioIdx === 1 ? "box-sizing: border-box" : ""};
 
     width: 100%;
     height: 1px;

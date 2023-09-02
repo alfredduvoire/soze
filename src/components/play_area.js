@@ -55,6 +55,9 @@ const PlayArea = (props) => {
                 isComplete = {props.isComplete}
                 nextIO = {props.nextIO}
                 multiplier={props.multiplier}
+                storyLengthRequirement={props.storyLengthRequirement}
+                slotColorList={props.slotColorList}
+
             />
 
             <DetectiveName

@@ -61,7 +61,7 @@ const RefreshButton = (props) => {
             refreshEarned={props.refreshEarned}
             refreshEarnedTime={props.refreshEarnedTime}
         >
-            {props.numRefreshes}
+            {/*{props.numRefreshes}*/}
         </StyledRefreshButton>
 
     );

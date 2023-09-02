@@ -33,13 +33,11 @@ const handleGridPlacement = (idx) => {
 };
 
 const StyledDetailImg = styled.img`
-    // margin: ${props => (props.parent === "story") ? "0.5em 0em" : "0.5em"};
-    margin: 0;
-    // width: 80%;
+    height: ${props => props.parent === "story" ? "100%" : "90%"};
     aspect-ratio: 1 / 1;
-    height: 80%;
     object-fit: contain;
-   
+
+    margin: 0;
     grid-row: ${props => handleGridPlacement(props.idx).row};
     grid-column: ${props => handleGridPlacement(props.idx).column};
 
