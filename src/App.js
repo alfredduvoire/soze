@@ -107,7 +107,8 @@ function App() {
 
     // I think it's more interesting if it's typically the same # as the level...
     // Except it is still kind of random
-    difficulty = getRandomInt(difficulty + 1);
+    // This makes it so that it's always at least one
+    difficulty = Math.max( getRandomInt(difficulty + 1), 1);
 
     let tempList = new Array(num).fill("any");
     let randList = [];
