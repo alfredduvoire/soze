@@ -1,9 +1,4 @@
-// import React from 'react';
-// import Header from './header.js';
 import styled, { keyframes } from 'styled-components';
-// import {headShake} from 'react-animations';
-
-// const headShakeAnimation = keyframes`${headShake}`;
 
 const select = keyframes`
     0% {
@@ -32,10 +27,15 @@ const handleGridPlacement = (idx) => {
     }
 };
 
-const StyledDetailImg = styled.img`
+const StyledDetailImg = styled.div`
+    position: relative;
     height: ${props => props.parent === "story" ? "100%" : "90%"};
     aspect-ratio: 1 / 1;
     object-fit: contain;
+
+    background-image: url(${props => props.src});
+    background-repeat: no-repeat;
+    background-size: contain;
 
     margin: 0;
     grid-row: ${props => handleGridPlacement(props.idx).row};
@@ -44,6 +44,25 @@ const StyledDetailImg = styled.img`
     animation-name:  ${props => props.selected ? select : null};
     animation-duration: 200ms;
     animation-fill-mode: forwards;
+
+    &:after {
+        content: '${props => props.counter}';
+        position: absolute;
+        bottom: 10%;
+        left: 38%;
+
+        height: 20%;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        color: white;
+        background-color: #FFAAAA;
+        border: 3px solid #FFFFFF;
+    };
 `;
 
 
@@ -63,6 +82,8 @@ const Detail = (props) => {
                 parent={props.parent}
                 onClick={() => props.handleClick(props.idx)}
                 idx={props.idx}
+                type={props.type}
+                counter={props.counter}
             />
     );
 }

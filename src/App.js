@@ -58,6 +58,10 @@ function App() {
         type: possibleTypes[ getRandomInt(possibleTypes.length) ],
         connectors: possibleConnectors[ getRandomInt(possibleConnectors.length) ],
         selected: false,
+        // This is where we actually want to randomly generate a bomb
+        // For designing purposes, we'll just have every one exist for now
+        counter: 1,
+
       };
     });
   };

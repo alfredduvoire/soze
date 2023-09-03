@@ -33,6 +33,7 @@ const DetailBoard = (props) => {
                 idx={i}
                 handleClick={props.handleBoardClick}
                 parent={"board"}
+                counter={x.counter}
             />
         );
     });
