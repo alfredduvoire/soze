@@ -1,9 +1,5 @@
-// import React from 'react';
-// import Header from './header.js';
 import styled, { keyframes } from 'styled-components';
-// import {headShake} from 'react-animations';
-
-// const headShakeAnimation = keyframes`${headShake}`;
+import Bomb from './bomb';
 
 const select = keyframes`
     0% {
@@ -13,6 +9,20 @@ const select = keyframes`
     100% {
         transform: scale( .01 ) translate(0, 500% );
         opacity: 0;
+    }
+`;
+
+const flyIn = keyframes`
+    0% {
+        transform: scale(0.01);
+        opacity: 0;
+    }
+    83% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
     }
 `;
 
@@ -32,38 +42,148 @@ const handleGridPlacement = (idx) => {
     }
 };
 
-const StyledDetailImg = styled.img`
-    height: ${props => props.parent === "story" ? "100%" : "90%"};
-    aspect-ratio: 1 / 1;
-    object-fit: contain;
+const StyledDetail = styled.div`
+    position: relative;
+    height: 90%;
+    aspect-ratio: 8 / 10;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    overflow-x: visible;
+
+    background-color: ${props => props.bgColor};
+    border: 4px solid #EEEEEE;
+    border-radius: 10%;
+    box-shadow: 3px 3px 3px #AAAAAA;
 
     margin: 0;
     grid-row: ${props => handleGridPlacement(props.idx).row};
     grid-column: ${props => handleGridPlacement(props.idx).column};
 
-    animation-name:  ${props => props.selected ? select : null};
-    animation-duration: 200ms;
+    animation-name:  ${props => props.selected ? select : props.parent !== "story" ? flyIn : null};
+    animation-duration: ${props => props.selected ? "200ms" : "300ms"};
     animation-fill-mode: forwards;
 `;
 
+const StyledConnectorContainer = styled.div`
+    width: 10%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: ${props => props.idx === 0 ? "end" : "start"};
+
+    overflow-x: visible;
+`;
+
+const StyledMidContainer = styled.div`
+    position: relative;
+    width: 80%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    overflow-y: visible
+`;
+
+const StyledConnector = styled.div`
+    background: ${props => props.borderColor};
+
+    width: 250%;
+    height: 1px;
+    border: 4px solid ${props => props.borderColor};
+    border-radius: 8px;
+`;
+
+const StyledTypeImg = styled.img`
+width: 60%;
+aspect-ratio: 1 / 1;
+object-fit: contain;
+`;
 
 const Detail = (props) => {
-    // props of the form:
-    // Props we need:
-    // Connector List
-    // Class: (e.g., Where, When, Who)
-    // Do we need position in list? I'm thinking we probably need the index
-    // I don't think we need a status or anything, but... who knows
 
+    const borderColorSelector = {
+        'who': "#FF7655",
+        'where': "#1982C4",
+        'when': "#8AC926",
+        'why': "#6A4C93",
+        'any': "#FFCA3A",
+    };
+
+    const bgColorSelector = {
+        'who': "#FFDED6",
+        'where': "#DBEEFA",
+        'when': "#EEF8DD",
+        'why': "#EAE4F1",
+        'any': "#FFCA3A",
+    }
+    
+    const connectorList = (num, idx) => {
+        return new Array(num).fill(undefined).map((x, i) => {
+            return <StyledConnector 
+                key={i} 
+                idx={idx}
+                borderColor={borderColorSelector[props.type]}
+                bgColor={bgColorSelector[props.type]}
+            />;
+        });
+    }
+/*
     return (
-            <StyledDetailImg 
+            <StyledDetail
                 src={"https://raw.githubusercontent.com/dcstrandberg/soze/main/public/" + props.type + "-" + props.connectors[0] + "-" + props.connectors[1] + ".png"}  
-                alt=""
                 selected={props.selected}
                 parent={props.parent}
                 onClick={() => props.handleClick(props.idx)}
                 idx={props.idx}
-            />
+                type={props.type}
+                counter={props.counter}
+            >
+                {props.counter >= 0 &&
+                    <Bomb 
+                        counter={props.counter}
+                        type={props.type}
+                    />
+                }
+            </StyledDetail>
+    );
+*/
+    return (
+        <StyledDetail
+            selected={props.selected}
+            parent={props.parent}
+            onClick={() => props.handleClick(props.idx)}
+            idx={props.idx}
+            borderColor={borderColorSelector[props.type]}
+            bgColor={bgColorSelector[props.type]}            
+        >
+            <StyledConnectorContainer idx={0}>
+                {connectorList(props.connectors[0], 0)}
+            </StyledConnectorContainer>
+            <StyledMidContainer>
+                {props.counter >= 0 &&
+                    <Bomb 
+                    counter={props.counter}
+                    type={props.type}
+                    borderColor={borderColorSelector[props.type]}
+                    bgColor={bgColorSelector[props.type]}
+                    />
+                }
+                <StyledTypeImg 
+                    src={"https://raw.githubusercontent.com/alfredduvoire/soze/bombs/public/" + props.type + ".png"}
+                    alt=""
+                />
+            </StyledMidContainer>
+            <StyledConnectorContainer idx={1}>
+                {connectorList(props.connectors[1], 1)}
+            </StyledConnectorContainer>
+        </StyledDetail>
     );
 }
 

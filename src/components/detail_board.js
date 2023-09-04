@@ -5,7 +5,7 @@ const StyledBoardDiv = styled.div`
     // background: #FAFAFA;
     width: 100%;
     height: 60%;
-    // padding: 5px;
+    padding: 10px;
     box-sizing: border-box;
 
     margin: 1em 0;
@@ -13,6 +13,8 @@ const StyledBoardDiv = styled.div`
     display: grid;
     grid-template-columns: repeat(6, minmax(100px, 1fr));
     grid-template-rows: repeat(3, minmax(100px, 1fr));
+    row-gap: 5px;
+
     align-items: center;
     justify-items: center;
 
@@ -33,6 +35,7 @@ const DetailBoard = (props) => {
                 idx={i}
                 handleClick={props.handleBoardClick}
                 parent={"board"}
+                counter={x.counter}
             />
         );
     });

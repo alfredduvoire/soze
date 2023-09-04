@@ -8,8 +8,8 @@ height: 80%;
 aspect-ratio: 1 / 4;
 box-sizing: border-box;
 
-padding-bottom: 14px;
-padding-top: 9px;
+padding-bottom: 4px;
+padding-top: 4px;
 
 font-size: 1.5em;
 
