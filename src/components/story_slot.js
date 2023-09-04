@@ -21,7 +21,7 @@ const StyledStorySlot = styled.div`
 const StorySlot = (props) => {
 
     const colorSelector = {
-        'who': "#FF595E",
+        'who': "#FF7655",
         'where': "#1982C4",
         'when': "#8AC926",
         'why': "#6A4C93",

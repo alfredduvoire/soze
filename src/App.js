@@ -33,9 +33,20 @@ function App() {
   // Will need to add in "Default" to this
   const possibleTypes = ['who', 'where', 'when'];
 
-  // Testing
-  // 
-  const slotColorList = ["any", "who", "any", "any", "any"];
+  /////////////////////// Difficulty / Level Progression Constants 
+  // Let's begin by figuring out if the detail has a bomb
+  const hasBomb = (level) => {
+    // Don't have a bomb in the first level
+    // Every level after that has an incremental 1% chance to generate a bomb
+    return (Math.random() < 0.01 * (level - 1)) && (level > 1);
+  };
+
+  // If the detail has a bomb, what's the countdown?
+  const generateCounter = (level) => {
+    // Bombs have a countdown timer of 6 stories, but can be 1 shorter every 10 levels  
+    return ( 6 - Math.min( 2, getRandomInt(Math.floor(level / 10) ) ) );
+  }
+
 
   /////////////////////// Animation Timing Constants
   const completeModalTime = 2500;
@@ -52,7 +63,7 @@ function App() {
   } ;
 
   // Helper function to  generate the Detail List
-  const generateDetailList = (num = NUMDETAILS) => {
+  const generateDetailList = (num = NUMDETAILS, level = 1) => {
     return new Array(num).fill(undefined).map((x, i) => {
       return {
         type: possibleTypes[ getRandomInt(possibleTypes.length) ],
@@ -60,7 +71,7 @@ function App() {
         selected: false,
         // This is where we actually want to randomly generate a bomb
         // For designing purposes, we'll just have every one exist for now
-        counter: 1,
+        counter: (hasBomb(level) ? generateCounter(level) : -1),
 
       };
     });
@@ -78,8 +89,7 @@ function App() {
 
     // Replace all the details in the detailBoard and clear the story
     // Do we need to clear the story so frequently that it's its own function?
-    // Refreshing the detail board should be...
-
+    
     // Reset Detail Type Counts
     tempState['detailTypeCount'] = {
       who: 0,
@@ -91,9 +101,23 @@ function App() {
     tempState['isValid'] = false;
     tempState['isComplete'] = false;
     tempState['isConnecting'] = false;
-
+    
     // Set the Detail List
-    tempState['detailList'] = generateDetailList(NUMDETAILS);
+    // It would be cool if we didn't clear any of the details that have bombs on them...
+    // ... so we need to do this a little bit more careful with how we do it
+    // tempState['detailList'] = generateDetailList(NUMDETAILS, tempState['level']);
+    let nonBombList = [];
+    for (let i = 0; i < tempState['detailList'].length; i++) {
+      if (tempState['detailList'][i]['counter'] === -1) {
+        nonBombList.push(i);
+      }
+    }
+
+    // For each non-bombed detail, generate a replacement and assign it in the tempState
+    const replacementList = generateDetailList(nonBombList.length, tempState['level']);
+    for (let i = 0; i < nonBombList.length; i++) {
+      tempState['detailList'][nonBombList[i]] = replacementList[i];
+    }
 
     // Clear the story
     tempState['storyDetails'] = [];
@@ -104,7 +128,8 @@ function App() {
 
   
   // Function to generate a list for slot colors
-  const generateSlotColorList = (num = NUMFORSTORY, difficulty = 1) => {
+  // Added the minus 2, so that we never put it in first or last slot
+  const generateSlotColorList = (num = NUMFORSTORY - 2, difficulty = 1) => {
 
     // TODO add "why"
     const possibleColors = ["who", "when", "where",]
@@ -124,6 +149,9 @@ function App() {
       }
     }
 
+    // Adding logic to pad out the array so that first + last are always "any"
+    tempList.unshift("any");
+    tempList.push("any");
     return tempList;
   };
 
@@ -194,13 +222,33 @@ function App() {
     tempState['IO'] = tempState['nextIO'];
     tempState['nextIO'] = possibleConnectors[ getRandomInt(possibleConnectors.length) ];
     
-    // TODO: Is this fun? Modify the slot color list
-    tempState['slotColorList'] = generateSlotColorList(NUMFORSTORY, tempState['level']);
+    // TODO: Is this fun? Modify the slot color list\
+    // Adding minus 2 because we never want it to be first or last slot
+    tempState['slotColorList'] = generateSlotColorList(NUMFORSTORY - 2, tempState['level']);
     
     /*
     // TEMP RULE: Only refresh detailBoard if board is empty
     if (tempState['detailList'].length === 0) {
       */
+
+      // Now we need to decrement any bomb timers, and check if there's an explosion!!!!
+      for (let i = 0; i < tempState['detailList'].length; i++) {
+        if (tempState['detailList'][i]['counter'] > -1) {
+          tempState['detailList'][i]['counter'] = tempState['detailList'][i]['counter'] - 1;
+
+          // Now we check if that's caused an explosion
+          // Second part of the logic excludes any details that were used in the story from the check
+          if ((tempState['detailList'][i]['counter'] === 0) && !(tempState['detailList'][i]['selected'])){
+            // Trigger a game over somehow....
+            // This is a placeholder for now
+            // This isn't working for whatever reason
+            let txt = incorrectDialogues[getRandomInt(incorrectDialogues.length)];
+            displayDialogue(txt);
+          }
+        }
+      }
+
+
       // Refresh missing details in list
       const refreshIndices = tempState['storyDetails'].map( (x) => {
         return x['boardIdx'];
@@ -208,8 +256,9 @@ function App() {
       
       for (let i = 0; i < refreshIndices.length; i++) {
         // tempState['detailList'][i] = generateDetailList(NUMDETAILS);
-        tempState['detailList'][refreshIndices[i]] = generateDetailList(1)[0];
+        tempState['detailList'][refreshIndices[i]] = generateDetailList(1, tempState['level'])[0];
       }
+
     // }
   
     // Clear the story
@@ -519,7 +568,7 @@ function App() {
 
   /////////////////////////////// STATE INITIALIZERS //////////////////////////////
   const initialState = {
-    detailList: generateDetailList(NUMDETAILS),
+    detailList: generateDetailList(NUMDETAILS, 1),
     storyDetails: [],
     detailTypeCount: {
       who: 0,
