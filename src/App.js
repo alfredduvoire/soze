@@ -102,6 +102,7 @@ function App() {
     tempState['isComplete'] = false;
     tempState['isConnecting'] = false;
     
+    
     // Set the Detail List
     // It would be cool if we didn't clear any of the details that have bombs on them...
     // ... so we need to do this a little bit more careful with how we do it
@@ -112,6 +113,15 @@ function App() {
         nonBombList.push(i);
       }
     }
+    
+    // Trying this becauset the animation isn't triggering for the new details when they appear after a refresh
+    // So let's try setting the old ones as selected first, before replacing them
+    for (let i = 0; i < nonBombList.length; i++) {
+      tempState['detailList'][nonBombList[i]]['selected'] = true;
+    }
+
+    // And we may have to set the state to get this to register
+    // setGameState(tempState);
 
     // For each non-bombed detail, generate a replacement and assign it in the tempState
     const replacementList = generateDetailList(nonBombList.length, tempState['level']);
@@ -485,10 +495,20 @@ function App() {
       tempState['multiplier'] = 1;
     }
 
-    // Refresh detail and story and decrement number of refreshes
-    tempState = refreshDetails(tempState);
-
+    // This is really hacky
+    // Setting all details as selected so that they disappear, so that the refresh animation plays appropriately
+    for (let i = 0; i < tempState['detailList'].length; i++) {
+      tempState['detailList'][i]['selected'] = true;
+    }
     setGameState(tempState);
+
+    // Refresh detail and story and decrement number of refreshes
+    // This timeout is part of the hacky nonsense above
+    setTimeout(() => {
+      tempState = refreshDetails(tempState);
+      setGameState(tempState);
+    }, 100)
+
     return;
   }
 

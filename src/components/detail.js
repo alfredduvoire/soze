@@ -134,26 +134,6 @@ const Detail = (props) => {
             />;
         });
     }
-/*
-    return (
-            <StyledDetail
-                src={"https://raw.githubusercontent.com/dcstrandberg/soze/main/public/" + props.type + "-" + props.connectors[0] + "-" + props.connectors[1] + ".png"}  
-                selected={props.selected}
-                parent={props.parent}
-                onClick={() => props.handleClick(props.idx)}
-                idx={props.idx}
-                type={props.type}
-                counter={props.counter}
-            >
-                {props.counter >= 0 &&
-                    <Bomb 
-                        counter={props.counter}
-                        type={props.type}
-                    />
-                }
-            </StyledDetail>
-    );
-*/
     return (
         <StyledDetail
             selected={props.selected}
