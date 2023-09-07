@@ -144,7 +144,7 @@ function App() {
   const generateSlotColorList = (num = NUMFORSTORY - 2, difficulty = 1) => {
 
     // TODO add "why"
-    const possibleColors = ["who", "when", "where",]
+    const possibleColors = possibleTypes;
 
     // I think it's more interesting if it's typically the same # as the level...
     // Except it is still kind of random
