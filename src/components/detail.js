@@ -156,7 +156,7 @@ const Detail = (props) => {
                     />
                 }
                 <StyledTypeImg 
-                    src={"https://raw.githubusercontent.com/alfredduvoire/soze/bombs/public/" + props.type + ".png"}
+                    src={"https://raw.githubusercontent.com/alfredduvoire/soze/main/public/" + props.type + ".png"}
                     alt=""
                 />
             </StyledMidContainer>
