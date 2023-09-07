@@ -3,6 +3,7 @@ import DetectiveImage from './detective_image';
 import StoryCompleteModal from './story_complete_modal';
 
 const StyledDetectiveContainer = styled.div`
+    position: relative;
     width: 100%;
     height: 0em;
     overflow-y: visible; 

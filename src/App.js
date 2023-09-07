@@ -4,9 +4,10 @@ import { useState } from 'react';
 
 import Sidebar from './components/sidebar.js';
 import PlayArea from './components/play_area.js';
-import StoryCompleteModal from './components/story_complete_modal';
+import PlayerMessageContainer from './components/player_message_container';
 
 const StyledAppDiv = styled.div`
+  position: relative;
   display: flex;
 
   margin: 5px;
@@ -31,7 +32,7 @@ function App() {
     [3, 1], [3, 2], [3, 3],
   ];
   // Will need to add in "Default" to this
-  const possibleTypes = ['who', 'where', 'when'];
+  const possibleTypes = ['who', 'where', 'when', 'why',];
 
   /////////////////////// Difficulty / Level Progression Constants 
   // Let's begin by figuring out if the detail has a bomb
@@ -91,10 +92,12 @@ function App() {
     // Do we need to clear the story so frequently that it's its own function?
     
     // Reset Detail Type Counts
+    // Would be more resilient if this wasn't hard-coded
     tempState['detailTypeCount'] = {
       who: 0,
       where: 0,
       when: 0,
+      why: 0,
     };
     
     // Reset valid + complete checks
@@ -106,7 +109,6 @@ function App() {
     // Set the Detail List
     // It would be cool if we didn't clear any of the details that have bombs on them...
     // ... so we need to do this a little bit more careful with how we do it
-    // tempState['detailList'] = generateDetailList(NUMDETAILS, tempState['level']);
     let nonBombList = [];
     for (let i = 0; i < tempState['detailList'].length; i++) {
       if (tempState['detailList'][i]['counter'] === -1) {
@@ -250,11 +252,11 @@ function App() {
           // Now we check if that's caused an explosion
           // Second part of the logic excludes any details that were used in the story from the check
           if ((tempState['detailList'][i]['counter'] === 0) && !(tempState['detailList'][i]['selected'])){
-            // Trigger a game over somehow....
-            // This is a placeholder for now
-            // This isn't working for whatever reason
-            let txt = incorrectDialogues[getRandomInt(incorrectDialogues.length)];
-            displayDialogue(txt);
+            // Trigger a game over....
+            tempState['showPlayerMessage'] = true;
+            setPlayerMessage("Boom! \nGame Over...");
+            setGameState(tempState);
+            return;
           }
         }
       }
@@ -497,8 +499,18 @@ function App() {
 
     // This is really hacky
     // Setting all details as selected so that they disappear, so that the refresh animation plays appropriately
+    // ...Actually, first we need to get the list of non-Bomb details
+    // ...Because since we're not refreshing the Bombs, they can't get set to Selected
+    // ...Otherwise they dont' come back...
+    let nonBombList = [];
     for (let i = 0; i < tempState['detailList'].length; i++) {
-      tempState['detailList'][i]['selected'] = true;
+      if (tempState['detailList'][i]['counter'] === -1) {
+        nonBombList.push(i);
+      }
+    }
+
+    for (let i = 0; i < nonBombList.length; i++) {
+      tempState['detailList'][nonBombList[i]]['selected'] = true;
     }
     setGameState(tempState);
 
@@ -595,6 +607,7 @@ function App() {
       who: 0,
       where: 0,
       when: 0,
+      why: 0,
     },
     isValid: false,
     isConnecting: false,
@@ -607,6 +620,7 @@ function App() {
     multiplier: 1,
     level: 1,
     slotColorList: generateSlotColorList(),
+    showPlayerMessage: false,
   };
   
   const [gameState, setGameState] = useState(initialState);
@@ -623,8 +637,16 @@ function App() {
   const [pointLossIdx, setPointLossIdx] = useState(0);
   const [invalidStory, setInvalidStory] = useState(false);
 
+  const [playerMessage, setPlayerMessage] = useState("GAME OVER");
+
   return (
     <StyledAppDiv>
+
+      {gameState['showPlayerMessage'] && 
+        <PlayerMessageContainer
+          msg={playerMessage}
+        />
+      }
 
       <Sidebar 
         handleRefreshClick={handleRefreshClick}
@@ -649,14 +671,12 @@ function App() {
         handleStoryClick = {handleStoryClick}
         IO = {gameState['IO']}
         isConnecting = {gameState['isConnecting']}
-        detailTypeCount = {gameState['detailTypeCount']}
         nextIO = {gameState['nextIO']}
         multiplier={gameState['multiplier']}
         detectiveName={storyState['detectiveName']}
         dialogueText={storyState['dialogueText']}
         storyLengthRequirement={NUMFORSTORY}
-        slotColorList={gameState["slotColorList"]}
-
+        slotColorList={gameState['slotColorList']}
       />
 
     </StyledAppDiv>

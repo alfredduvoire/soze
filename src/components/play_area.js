@@ -7,6 +7,7 @@ import DetectiveContainer from './detective_container.js';
 import DetectiveName from './detective_name.js';
 
 const StyledPlayArea = styled.div`
+    // position: relative;
     height: 100%;
     width: 85%;
     box-sizing: border-box;
@@ -41,10 +42,7 @@ const PlayArea = (props) => {
             
             <InvalidWarning 
                 showWarning = {
-                    (( !(props['isConnecting']) && props['storyDetails'].length > 0 ) || 
-                        (!(props['isValid']) && props['detailTypeCount']['who'] > 0 
-                        && props['detailTypeCount']['where'] > 0 
-                        && props['detailTypeCount']['when'] > 0))
+                    (( !(props['isConnecting']) && props['storyDetails'].length > 0 ))
                 }
             />
 

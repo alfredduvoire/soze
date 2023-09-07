@@ -24,10 +24,11 @@ const inOut = keyframes`
 `;
 
 const StyledStoryCompleteModal = styled.div`
-	position: relative;
+	position: absolute;
   width: 30%;
-  bottom: 150px;
-  left: 30px;
+  right: 50%;
+  bottom: 0;
+  transform: translate(0, 20%);
 
   display: flex;
   flex-direction: column;
