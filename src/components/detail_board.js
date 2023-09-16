@@ -11,8 +11,8 @@ const StyledBoardDiv = styled.div`
     margin: 1em 0;
 
     display: grid;
-    grid-template-columns: repeat(6, minmax(100px, 1fr));
-    grid-template-rows: repeat(3, minmax(100px, 1fr));
+    grid-template-columns: repeat(6, minmax(10px, 1fr));
+    grid-template-rows: repeat(3, minmax(10px, 1fr));
     row-gap: 5px;
 
     align-items: center;
@@ -36,6 +36,7 @@ const DetailBoard = (props) => {
                 handleClick={props.handleBoardClick}
                 parent={"board"}
                 counter={x.counter}
+                bombRemoved={x.bombRemoved}
             />
         );
     });

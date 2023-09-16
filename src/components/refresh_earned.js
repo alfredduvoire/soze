@@ -30,7 +30,7 @@ const StyledRefreshEarned = styled.div`
 
     opacity: 0;
 
-    animation-name:  ${props => props.refreshEarned ? refreshEarnedAnimation : null};
+    animation-name:  ${props => props.refreshEarned > 0 ? refreshEarnedAnimation : null};
     animation-duration: ${props => "" + props.refreshEarnedTime + "ms"};
 `;
 
@@ -42,7 +42,7 @@ const RefreshEarned = (props) => {
             refreshEarned={props.refreshEarned}
             refreshEarnedTime={props.refreshEarnedTime}
         >
-            +1
+            +{props.refreshEarned}
         </StyledRefreshEarned>
 
     );

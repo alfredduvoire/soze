@@ -39,7 +39,7 @@ const StyledRefreshButton = styled.div`
     color: #333333;
     text-align: center;
 
-    animation-name: ${props => props.refreshEarned ? refreshEarnedAnimation : null};
+    animation-name: ${props => props.refreshEarned > 0 ? refreshEarnedAnimation : null};
     animation-duration: ${props => "" + props.refreshEarnedTime + "ms"};
 
     // padding: 10px;
@@ -61,7 +61,7 @@ const RefreshButton = (props) => {
             refreshEarned={props.refreshEarned}
             refreshEarnedTime={props.refreshEarnedTime}
         >
-            {/*{props.numRefreshes}*/}
+            {props.numRefreshes}
         </StyledRefreshButton>
 
     );

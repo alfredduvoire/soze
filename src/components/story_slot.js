@@ -16,6 +16,7 @@ const pulse = keyframes`
 `;
 
 const StyledStorySlot = styled.div`
+    position: relative;
     background: rgb(255,255,255);
     background: ${props => props.gradient !== null ? props.gradient : null};
     height: 90%;
@@ -29,12 +30,17 @@ const StyledStorySlot = styled.div`
     align-items: center;
 
     overflow-x: visible;
+    z-index: 1;
 
     border: 3px solid ${props => (props.slotColor !== null) ? props.slotColor : "#FFCA3A"};
-    border-radius: 4px;
+    border-radius: 10%;
 
     &:after {
         content: '';
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        left: 0;
         width: ${props => props.gradient !== null ? "100%" : "0%"};
         height: ${props => props.gradient !== null ? "100%" : "0%"};
         opacity: 0%;
@@ -43,7 +49,29 @@ const StyledStorySlot = styled.div`
         animation-duration: 15s;
         animation-iteration-count: infinite;     
     }
+
 `;
+
+const StyledRefreshIndicator = styled.div`
+    width: 50%;
+    // height: 100%;
+    aspect-ratio: 1 / 1;
+
+    background-image: url("https://raw.githubusercontent.com/alfredduvoire/soze/refresh_slots/public/refresh-nobg.png");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    font-size: 1em;
+    font-weight: bold;
+    text-justify: center;    
+    padding-bottom: 6%;
+
+`; 
 
 const StorySlot = (props) => {
 
@@ -66,7 +94,14 @@ const StorySlot = (props) => {
 
     return (
         <StyledStorySlot slotColor={colorSelector[props.slotColor]} gradient={gradientSelector[props.slotColor]}>
-        {props.detail}
+        {(props.detail === undefined) && (props.slotColor !== "any") && 
+        <StyledRefreshIndicator
+            slotColor={colorSelector[props.slotColor]} gradient={gradientSelector[props.slotColor]}
+        >
+            +
+        </StyledRefreshIndicator>
+        }
+        {props.detail !== undefined && props.detail}
         </StyledStorySlot>
     );
 }

@@ -7,7 +7,7 @@ const StyledDetectiveName = styled.div`
     justify-content: center;
     align-items: center;
 
-    font-size: 1.5em;
+    font-size: 1.5vw;
     font-weight: bold;
 `;
 

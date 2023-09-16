@@ -26,6 +26,18 @@ const flyIn = keyframes`
     }
 `;
 
+const bombDisappear = keyframes`
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(3);
+        opacity: 0;
+    }
+
+`;
+
 const handleGridPlacement = (idx) => {
     if (idx < 6) {
         return {row: 1, column: idx + 1};
@@ -63,7 +75,7 @@ const StyledDetail = styled.div`
     grid-row: ${props => handleGridPlacement(props.idx).row};
     grid-column: ${props => handleGridPlacement(props.idx).column};
 
-    animation-name:  ${props => props.selected ? select : props.parent !== "story" ? flyIn : null};
+    animation-name:  ${props => props.selected ? select : props.bombRemoved ? bombDisappear : props.parent !== "story" ? flyIn : null};
     animation-duration: ${props => props.selected ? "200ms" : "300ms"};
     animation-fill-mode: forwards;
 `;
@@ -141,7 +153,8 @@ const Detail = (props) => {
             onClick={() => props.handleClick(props.idx)}
             idx={props.idx}
             borderColor={borderColorSelector[props.type]}
-            bgColor={bgColorSelector[props.type]}            
+            bgColor={bgColorSelector[props.type]}  
+            bombRemoved={props.bombRemoved}          
         >
             <StyledConnectorContainer idx={0}>
                 {connectorList(props.connectors[0], 0)}

@@ -39,7 +39,8 @@ function App() {
   const hasBomb = (level) => {
     // Don't have a bomb in the first level
     // Every level after that has an incremental 1% chance to generate a bomb
-    return (Math.random() < 0.01 * (level - 1)) && (level > 1);
+    return (Math.random() < 0.5 * (level - 1)) && (level > 1);
+    // return (Math.random() < 0.25);
   };
 
   // If the detail has a bomb, what's the countdown?
@@ -67,11 +68,12 @@ function App() {
   const generateDetailList = (num = NUMDETAILS, level = 1) => {
     return new Array(num).fill(undefined).map((x, i) => {
       return {
-        type: possibleTypes[ getRandomInt(possibleTypes.length) ],
+        // Modifying this to exclude "Why" from being generated
+        type: possibleTypes[ getRandomInt(possibleTypes.length - 1) ],
         connectors: possibleConnectors[ getRandomInt(possibleConnectors.length) ],
         selected: false,
+        bombRemoved: false,
         // This is where we actually want to randomly generate a bomb
-        // For designing purposes, we'll just have every one exist for now
         counter: (hasBomb(level) ? generateCounter(level) : -1),
 
       };
@@ -84,6 +86,27 @@ function App() {
     return getRandomInt(MAXSCORENEEDED - 2) + 3;
   }
 
+  // Helper function to get the indices of details either Bomb or Non-Bombed or Both
+  const getDetailIndices = (detailList, set = "all") => {
+
+    let idxList = [];
+    for (let i = 0; i < detailList.length; i++) {
+      if (
+        // If set is "all"
+        set === "all" ||
+        // If it's set to bombs we want all that have non-negative counter
+        set === "bombs" && detailList[i]['counter'] > -1 ||
+        // If it's set to non-bombs, then we want all that have counter equal to -1
+        set === "non-bombs" && detailList[i]['counter'] === -1
+        ) 
+        {
+        idxList.push(i);
+      }
+    }
+
+    return idxList;
+  };
+
   // Function to refresh the detail board and story
   const refreshDetails = (oldState) => {
     let tempState = {...oldState};
@@ -91,6 +114,7 @@ function App() {
     // Replace all the details in the detailBoard and clear the story
     // Do we need to clear the story so frequently that it's its own function?
     
+    /* I don't think we care about this anymore
     // Reset Detail Type Counts
     // Would be more resilient if this wasn't hard-coded
     tempState['detailTypeCount'] = {
@@ -99,7 +123,8 @@ function App() {
       when: 0,
       why: 0,
     };
-    
+    */
+
     // Reset valid + complete checks
     tempState['isValid'] = false;
     tempState['isComplete'] = false;
@@ -109,12 +134,7 @@ function App() {
     // Set the Detail List
     // It would be cool if we didn't clear any of the details that have bombs on them...
     // ... so we need to do this a little bit more careful with how we do it
-    let nonBombList = [];
-    for (let i = 0; i < tempState['detailList'].length; i++) {
-      if (tempState['detailList'][i]['counter'] === -1) {
-        nonBombList.push(i);
-      }
-    }
+    const nonBombList = getDetailIndices(tempState['detailList'], "non-bombs");
     
     // Trying this becauset the animation isn't triggering for the new details when they appear after a refresh
     // So let's try setting the old ones as selected first, before replacing them
@@ -141,15 +161,17 @@ function App() {
   
   // Function to generate a list for slot colors
   // Added the minus 2, so that we never put it in first or last slot
-  const generateSlotColorList = (num = NUMFORSTORY - 2, difficulty = 1) => {
+  // Removing the minus 2 again, because now color slots are optional
+  const generateSlotColorList = (num = NUMFORSTORY, level = 1) => {
 
-    // TODO add "why"
-    const possibleColors = possibleTypes;
+    // Probably janky to use a global variable, but whatever...
+    // Slicing this to exclude Why as a color slot type
+    const possibleColors = possibleTypes.slice(0,-1);
 
-    // I think it's more interesting if it's typically the same # as the level...
-    // Except it is still kind of random
-    // This makes it so that it's always at least one
-    difficulty = Math.max( getRandomInt(difficulty + 1), 1);
+    // Adjusting this so that it only ever generates 1 or 0
+    // But let's have a variable probability that becomes more likely the higher the level
+    const difficulty = Math.random() > (0.75 - ((level - 1) * 0.03)) ? 1 : 0;
+    // const difficulty = 1;
 
     let tempList = new Array(num).fill("any");
     let randList = [];
@@ -162,9 +184,6 @@ function App() {
       }
     }
 
-    // Adding logic to pad out the array so that first + last are always "any"
-    tempList.unshift("any");
-    tempList.push("any");
     return tempList;
   };
 
@@ -182,24 +201,6 @@ function App() {
   const handleCompletedStory = (oldState) => {
     let tempState = {...oldState};
 
-
-    // TODO: Figure out how refreshes are earned now...
-    /*
-    // Check if it's longer than necessary, and give refresh
-    if (tempState['storyDetails'].length > NUMFORSTORY) { 
-      // Animate Refresh Earned
-      setShowRefreshEarned(true);
-      
-      // I think the animation Booleans need to be their own state -- they can't be part of Game State
-      setTimeout(() => {
-        setShowRefreshEarned(false);
-      }, refreshEarnedTime + 200);
-
-      // Now give the refresh
-      tempState['numRefreshes'] = tempState['numRefreshes'] + 1;
-
-    }
-    */
     // Add one to the score and update the multiplier
     tempState['score'] = tempState['score'] + 1;
     tempState['multiplier'] = tempState['multiplier'] + 1;
@@ -235,14 +236,10 @@ function App() {
     tempState['IO'] = tempState['nextIO'];
     tempState['nextIO'] = possibleConnectors[ getRandomInt(possibleConnectors.length) ];
     
-    // TODO: Is this fun? Modify the slot color list\
+    // Modify the slot color list
     // Adding minus 2 because we never want it to be first or last slot
-    tempState['slotColorList'] = generateSlotColorList(NUMFORSTORY - 2, tempState['level']);
-    
-    /*
-    // TEMP RULE: Only refresh detailBoard if board is empty
-    if (tempState['detailList'].length === 0) {
-      */
+    // Removing minus 2 again because now slot colors are optional 
+    tempState['slotColorList'] = generateSlotColorList(NUMFORSTORY, tempState['level']);
 
       // Now we need to decrement any bomb timers, and check if there's an explosion!!!!
       for (let i = 0; i < tempState['detailList'].length; i++) {
@@ -345,23 +342,11 @@ function App() {
     }
     
     // Now here's where we do all the game checks and update logic, etc.
-    
-    // I don't think we actually care about this anymore
-    /*
-    // Update detailTypeCount
-    tempState['detailTypeCount'][ tempState['detailList'][idx]['type'] ] = tempState['detailTypeCount'][ tempState['detailList'][idx]['type'] ] + 1; // Not sure if I can -- this, so I'm doing it long-hand    
-    */
 
     // Check to see if the connections all match
-    [ tempState['isValid'], tempState['isConnecting'] ] = checkStoryConnections(tempState['storyDetails'], tempState['IO'], tempState['slotColorList']);
+    let numEarned = 0;
+    [ tempState['isValid'], tempState['isConnecting'], numEarned] = checkStoryConnections(tempState);
 
-    // Changing how we define a "complete" story -- instead of one of each, we need just a length
-    // Then Check if the story is complete
-    /*
-    if (tempState['detailTypeCount']['who'] > 0 
-      && tempState['detailTypeCount']['where'] > 0 
-      && tempState['detailTypeCount']['when'] > 0) {
-    */
     if (tempState['storyDetails'].length === NUMFORSTORY) {
       
       tempState['isComplete'] = true;
@@ -375,6 +360,44 @@ function App() {
         // Display congratulations text                 
         let txt = storyCompleteDialogue[getRandomInt(storyCompleteDialogue.length)];
         displayDialogue(txt);
+
+        // Now we need to reckon with whether we need to destroy all bombs
+        if (numEarned < 0) {
+          // First make numEarned NOT negative
+          numEarned *= -1;
+
+          // Now get the indices of Bombed details
+          const bombList = getDetailIndices(tempState['detailList'], 'bombs');
+
+          // It would be cool to trigger some sort of animation
+          // For now we'll just use the 'selected' animation as always
+          for (let i = 0; i < bombList.length; i++) {
+            tempState['detailList'][bombList[i]]['bombRemoved'] = true;
+          }
+          setGameState(tempState);
+
+
+          // But for now let's just refresh them
+          const replacementList = generateDetailList(bombList.length, tempState['level']);
+          for (let i = 0; i < bombList.length; i++) {
+            tempState['detailList'][bombList[i]] = replacementList[i];
+          }
+
+        }
+
+        // Add the number of refreshes
+        tempState['numRefreshes'] = tempState['numRefreshes'] + numEarned;
+        // We also need to trigger the "Refresh Earned" animation
+        if (numEarned > 0) { 
+          // Animate Refresh Earned
+          setNumRefreshEarned(numEarned);
+          
+          // I think the animation Booleans need to be their own state -- they can't be part of Game State
+          setTimeout(() => {
+            setNumRefreshEarned(0);
+          }, refreshEarnedTime + 200);
+        }
+
 
         setGameState(tempState);
       } else {
@@ -460,7 +483,7 @@ function App() {
 
     // If there's still details in the story, Check to see if the connections all match
     if (tempState['storyDetails'].length > 0 ) {
-      [ tempState['isValid'], tempState['isConnecting'] ] = checkStoryConnections(tempState['storyDetails'], tempState['IO'], tempState['slotColorList']);
+      [ tempState['isValid'], tempState['isConnecting'] ] = checkStoryConnections(tempState);
     } else {
       [tempState['isValid'], tempState['isConnecting'] ] = [false, false];
     }
@@ -502,12 +525,7 @@ function App() {
     // ...Actually, first we need to get the list of non-Bomb details
     // ...Because since we're not refreshing the Bombs, they can't get set to Selected
     // ...Otherwise they dont' come back...
-    let nonBombList = [];
-    for (let i = 0; i < tempState['detailList'].length; i++) {
-      if (tempState['detailList'][i]['counter'] === -1) {
-        nonBombList.push(i);
-      }
-    }
+    const nonBombList = getDetailIndices(tempState['detailList'], "non-bombs");
 
     for (let i = 0; i < nonBombList.length; i++) {
       tempState['detailList'][nonBombList[i]]['selected'] = true;
@@ -526,17 +544,19 @@ function App() {
 
 
   // Function to check if all the connectors are valid
-  const checkStoryConnections = (storyDetails, IO, slotColorList) => {
+  const checkStoryConnections = (oldState) => {
+    let tempState = {...oldState};
+    
     let isValid = false;
     let isConnecting = false;
 
     // THIS IS SUPER MESSY, BUT I DON'T CARE RIGHT NOW
     // first check the Input of I against the first Detail connector
-    if ( IO[0] === storyDetails[0]['connectors'][0]) {
+    if ( tempState['IO'][0] === tempState['storyDetails'][0]['connectors'][0]) {
       
       let midValid = true;
-      for (let i = 0; i < storyDetails.length - 1; i++) {
-        if (storyDetails[i]['connectors'][1] !== storyDetails[i + 1]['connectors'][0]) {
+      for (let i = 0; i < tempState['storyDetails'].length - 1; i++) {
+        if (tempState['storyDetails'][i]['connectors'][1] !== tempState['storyDetails'][i + 1]['connectors'][0]) {
           midValid = false;
         }
       }
@@ -544,7 +564,7 @@ function App() {
       if (midValid) {
         isConnecting = true;
 
-        if ( storyDetails[ storyDetails.length - 1]['connectors'][1] === IO[1]) {
+        if ( tempState['storyDetails'][ tempState['storyDetails'].length - 1]['connectors'][1] === tempState['IO'][1]) {
           // Finally
           isValid = true;
         }
@@ -553,23 +573,36 @@ function App() {
 
 
     // This is where we also check whether any of the color slots are correct
-    let tempValid = true;
-    for (let i = 0; i < storyDetails.length; i++) {
-      // Check if the color is wrong
-      if (slotColorList[i] !== storyDetails[i]['type']
-        && slotColorList[i] !== "any"
+    // Changing this to instead generate a refresh rather than be necessary to complete the story
+    // I'm going to try something a little cheeky
+    // If they trigger all the bombs to get refreshed, we simply pass back the number of refreshes as negative
+    // And that's the signal to awared all the refreshes as well as refresh all the bombs 
+    let numEarned = 0;
+    let causeBombRefreshMultiplier = 1;
+    for (let i = 0; i < tempState['storyDetails'].length; i++) {
+      // Check if the color matches (and is not "any")
+      if (tempState['slotColorList'][i] === tempState['storyDetails'][i]['type']
+        && tempState['slotColorList'][i] !== "any"
       ) {
-        tempValid = false;
+
+        // Now check to see if any of them had bombs in them
+        if (tempState['storyDetails'][i]['counter'] > -1) {
+          
+          // We need to somehow alert the game that all the bombs need to be cleared
+          // And we can't possibly do it in this function because that ruins comparmentalization
+          causeBombRefreshMultiplier = -1;
+        }
+        numEarned++;
       } 
     }
 
     // If tempValid is false, then the other two need to be made false
-    if (!tempValid) {
-      isValid = false;
-      isConnecting = false;
-    }
+    // if (!tempValid) {
+    //   isValid = false;
+    //   isConnecting = false;
+    // }
 
-    return [isValid, isConnecting];
+    return [isValid, isConnecting, numEarned * causeBombRefreshMultiplier];
   }
 
   /////////////////////////////// STORY THINGS //////////////////////////////
@@ -632,7 +665,7 @@ function App() {
 
   const [storyState, setStoryState] = useState(initialStory);
 
-  const [showRefreshEarned, setShowRefreshEarned] = useState(false);
+  const [numRefreshEarned, setNumRefreshEarned] = useState(0);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [pointLossIdx, setPointLossIdx] = useState(0);
   const [invalidStory, setInvalidStory] = useState(false);
@@ -651,7 +684,7 @@ function App() {
       <Sidebar 
         handleRefreshClick={handleRefreshClick}
         numRefreshes={gameState['numRefreshes']}
-        refreshEarned={showRefreshEarned}
+        refreshEarned={numRefreshEarned}
         refreshEarnedTime={refreshEarnedTime}
         score={gameState['score']}
         scoreNeeded={gameState['scoreNeeded']}
